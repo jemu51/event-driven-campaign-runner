@@ -121,6 +121,9 @@ export default function CampaignForm({
 				Create New Campaign
 			</h2>
 
+			<p className="text-gray-70 mt-1">
+				Set requirements, markets, and number of providers per market
+			</p>
 			{error && (
 				<div className="bg-red-20 border border-red-40 text-red-80 px-4 py-3 rounded-lg text-sm">
 					{error}

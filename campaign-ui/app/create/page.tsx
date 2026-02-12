@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import CampaignForm from "@/components/CampaignForm";
 import CampaignChat from "@/components/CampaignChat";
@@ -31,15 +32,16 @@ export default function CreateCampaignPage() {
 
 	return (
 		<div className="space-y-6">
-			<div>
-				<h1 className="text-2xl font-bold text-primary">
-					Create New Campaign
-				</h1>
-				<p className="text-gray-70 mt-1">
-					Set requirements, markets, and number of providers per
-					market
-				</p>
+			{/* <div> */}
+			<div className="flex items-center gap-2">
+				<Link
+					href="/"
+					className="text-gray-60 hover:text-gray-80 text-sm"
+				>
+					&larr; Back
+				</Link>
 			</div>
+			{/* </div> */}
 
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 				{/* Left: Create Campaign Form */}
