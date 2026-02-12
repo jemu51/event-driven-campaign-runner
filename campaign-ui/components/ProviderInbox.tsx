@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Provider, ConversationThread, STATUS_COLORS, STATUS_LABELS } from '@/lib/types';
-import { getProviderConversation, simulateProviderResponse } from '@/lib/api';
+import { getProviderConversation, simulateProviderResponse, updateProviderStatus } from '@/lib/api';
 import SimulateResponseModal from './SimulateResponseModal';
 
 interface ProviderInboxProps {
@@ -24,6 +24,9 @@ export default function ProviderInbox({ providers, campaignId, onSimulated }: Pr
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showScreeningNotes, setShowScreeningNotes] = useState(false);
+  const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
+  const [showStatusModal, setShowStatusModal] = useState(false);
+  const [statusNotes, setStatusNotes] = useState('');
 
   const selectedProvider = providers.find((p) => p.provider_id === selectedProviderId) || null;
 
@@ -104,6 +107,34 @@ export default function ProviderInbox({ providers, campaignId, onSimulated }: Pr
       setSending(false);
     }
   };
+
+  const handleStatusUpdate = async (newStatus: 'QUALIFIED' | 'REJECTED' | 'UNDER_REVIEW' | 'ESCALATED') => {
+    if (!selectedProvider || updatingStatus) return;
+    setUpdatingStatus(newStatus);
+    try {
+      await updateProviderStatus(
+        campaignId,
+        selectedProvider.provider_id,
+        newStatus,
+        statusNotes.trim() || undefined
+      );
+      setShowStatusModal(false);
+      setStatusNotes('');
+      onSimulated(); // Refresh the provider list
+    } catch (err) {
+      console.error('Failed to update provider status:', err);
+      alert('Failed to update provider status. Please try again.');
+    } finally {
+      setUpdatingStatus(null);
+    }
+  };
+
+  const canManuallyUpdate = selectedProvider && 
+    (selectedProvider.status === 'UNDER_REVIEW' || 
+     selectedProvider.status === 'ESCALATED' ||
+     selectedProvider.status === 'WAITING_RESPONSE' ||
+     selectedProvider.status === 'WAITING_DOCUMENT' ||
+     selectedProvider.status === 'DOCUMENT_PROCESSING');
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-30 overflow-hidden flex h-[calc(100vh-340px)] min-h-[520px]">
@@ -194,6 +225,15 @@ export default function ProviderInbox({ providers, campaignId, onSimulated }: Pr
                   >
                     {STATUS_LABELS[selectedProvider.status] ?? selectedProvider.status}
                   </span>
+                  {canManuallyUpdate && (
+                    <button
+                      onClick={() => setShowStatusModal(true)}
+                      className="px-3 py-1.5 text-xs bg-indigo-60 hover:bg-indigo-80 text-white rounded-lg transition-colors font-medium"
+                      title="Update provider status"
+                    >
+                      Update Status
+                    </button>
+                  )}
                   <button
                     onClick={refreshConversation}
                     className="p-1.5 rounded-lg hover:bg-gray-30 text-gray-60 hover:text-gray-80 transition-colors"
@@ -469,6 +509,79 @@ export default function ProviderInbox({ providers, campaignId, onSimulated }: Pr
             await refreshConversation();
           }}
         />
+      )}
+
+      {/* Status Update Modal */}
+      {showStatusModal && selectedProvider && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold text-primary mb-2">Update Provider Status</h3>
+            <p className="text-sm text-gray-70 mb-4">
+              Current status: <span className="font-medium">{STATUS_LABELS[selectedProvider.status] ?? selectedProvider.status}</span>
+            </p>
+            
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-80 mb-2">
+                New Status
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => handleStatusUpdate('QUALIFIED')}
+                  disabled={updatingStatus !== null}
+                  className="px-4 py-2 text-sm bg-green-60 hover:bg-green-80 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                >
+                  {updatingStatus === 'QUALIFIED' ? 'Qualifying...' : 'Qualify'}
+                </button>
+                <button
+                  onClick={() => handleStatusUpdate('REJECTED')}
+                  disabled={updatingStatus !== null}
+                  className="px-4 py-2 text-sm bg-red-60 hover:bg-red-80 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                >
+                  {updatingStatus === 'REJECTED' ? 'Rejecting...' : 'Reject'}
+                </button>
+                <button
+                  onClick={() => handleStatusUpdate('UNDER_REVIEW')}
+                  disabled={updatingStatus !== null}
+                  className="px-4 py-2 text-sm bg-orange-60 hover:bg-orange-80 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                >
+                  {updatingStatus === 'UNDER_REVIEW' ? 'Updating...' : 'Mark for Review'}
+                </button>
+                <button
+                  onClick={() => handleStatusUpdate('ESCALATED')}
+                  disabled={updatingStatus !== null}
+                  className="px-4 py-2 text-sm bg-teal-60 hover:bg-teal-80 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                >
+                  {updatingStatus === 'ESCALATED' ? 'Escalating...' : 'Escalate'}
+                </button>
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-80 mb-2">
+                Notes (optional)
+              </label>
+              <textarea
+                value={statusNotes}
+                onChange={(e) => setStatusNotes(e.target.value)}
+                placeholder="Add notes about this status change..."
+                className="w-full px-3 py-2 border border-gray-30 rounded-lg text-sm focus:ring-2 focus:ring-indigo-60 focus:border-indigo-60 outline-none resize-none"
+                rows={3}
+              />
+            </div>
+
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => {
+                  setShowStatusModal(false);
+                  setStatusNotes('');
+                }}
+                className="px-4 py-2 text-sm border border-gray-40 rounded-lg hover:bg-gray-20 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

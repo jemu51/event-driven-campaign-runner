@@ -98,13 +98,18 @@ from agents.shared.models.events import (
 )
 from agents.shared.tools.dynamodb import (
     create_campaign_record,
+    delete_campaign,
     list_all_campaigns,
     list_campaign_events,
     list_campaign_providers,
     load_campaign_record,
     load_provider_state,
     update_campaign_provider_count,
+    update_campaign_status,
+    update_provider_state,
 )
+from agents.shared.models.dynamo import CampaignStatus
+from agents.shared.state_machine import ProviderStatus
 from agents.shared.tools.email_thread import (
     create_inbound_message,
     create_thread_id,
@@ -311,12 +316,14 @@ async def list_campaigns_endpoint():
                 s = p.status.value
                 status_counts[s] = status_counts.get(s, 0) + 1
             
-            # Derive live status
+            # Derive live status (respect manually set status first)
             terminal = {"QUALIFIED", "REJECTED"}
-            if providers and all(p.status.value in terminal for p in providers):
+            if c.status.value == "COMPLETED":
                 live_status = "COMPLETED"
             elif c.status.value == "STOPPED":
                 live_status = "STOPPED"
+            elif providers and all(p.status.value in terminal for p in providers):
+                live_status = "COMPLETED"
             else:
                 live_status = "RUNNING"
             
@@ -348,12 +355,14 @@ async def get_campaign(campaign_id: str):
             status = provider.status.value
             status_counts[status] = status_counts.get(status, 0) + 1
 
-        # Derive live status
+        # Derive live status (respect manually set status first)
         terminal = {"QUALIFIED", "REJECTED"}
-        if providers and all(p.status.value in terminal for p in providers):
+        if campaign and campaign.status.value == "COMPLETED":
             live_status = "COMPLETED"
         elif campaign and campaign.status.value == "STOPPED":
             live_status = "STOPPED"
+        elif providers and all(p.status.value in terminal for p in providers):
+            live_status = "COMPLETED"
         else:
             live_status = "RUNNING"
 
@@ -386,6 +395,146 @@ async def get_campaign(campaign_id: str):
         }
     except Exception as e:
         log.error("campaign_fetch_failed", campaign_id=campaign_id, error=str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.patch("/api/campaigns/{campaign_id}/status")
+async def update_campaign_status_endpoint(
+    campaign_id: str,
+    status_data: dict[str, Any],
+):
+    """
+    Update campaign status (pause/stop/resume/complete).
+    
+    Request body:
+    {
+        "status": "STOPPED" | "RUNNING" | "COMPLETED"
+    }
+    """
+    try:
+        new_status_str = status_data.get("status", "").upper()
+        if new_status_str not in ["STOPPED", "RUNNING", "COMPLETED"]:
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid status. Must be 'STOPPED', 'RUNNING', or 'COMPLETED'",
+            )
+        
+        campaign = load_campaign_record(campaign_id)
+        if not campaign:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Campaign not found: {campaign_id}. It may have been deleted or the server was restarted (local dev resets data).",
+            )
+        
+        new_status = CampaignStatus(new_status_str)
+        update_campaign_status(campaign_id, new_status)
+        
+        return {
+            "campaign_id": campaign_id,
+            "status": new_status.value,
+            "message": f"Campaign status updated to {new_status.value}",
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        log.error("campaign_status_update_failed", campaign_id=campaign_id, error=str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.delete("/api/campaigns/{campaign_id}")
+async def delete_campaign_endpoint(
+    campaign_id: str,
+    delete_providers: bool = Query(False, description="Also delete all provider records"),
+):
+    """
+    Delete a campaign.
+    
+    Query params:
+    - delete_providers: If true, also delete all provider records and events
+    """
+    try:
+        campaign = load_campaign_record(campaign_id)
+        if not campaign:
+            raise HTTPException(status_code=404, detail="Campaign not found")
+        
+        delete_campaign(campaign_id, delete_providers=delete_providers)
+        
+        return {
+            "campaign_id": campaign_id,
+            "deleted": True,
+            "providers_deleted": delete_providers,
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        log.error("campaign_delete_failed", campaign_id=campaign_id, error=str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.patch("/api/campaigns/{campaign_id}/providers/{provider_id}/status")
+async def update_provider_status_endpoint(
+    campaign_id: str,
+    provider_id: str,
+    status_data: dict[str, Any],
+):
+    """
+    Manually update provider status (qualify/reject/manual review).
+    
+    Request body:
+    {
+        "status": "QUALIFIED" | "REJECTED" | "UNDER_REVIEW" | "ESCALATED",
+        "notes": "Optional notes for the status change"
+    }
+    """
+    try:
+        new_status_str = status_data.get("status", "").upper()
+        notes = status_data.get("notes", "")
+        
+        valid_statuses = ["QUALIFIED", "REJECTED", "UNDER_REVIEW", "ESCALATED"]
+        if new_status_str not in valid_statuses:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid status. Must be one of: {', '.join(valid_statuses)}",
+            )
+        
+        provider = load_provider_state(campaign_id, provider_id)
+        if not provider:
+            raise HTTPException(status_code=404, detail="Provider not found")
+        
+        new_status = ProviderStatus(new_status_str)
+        
+        # Update provider status with optional notes
+        update_kwargs = {}
+        if notes:
+            # Append notes to existing screening notes
+            existing_notes = provider.screening_notes or ""
+            update_kwargs["screening_notes"] = (
+                f"{existing_notes}\n\n[Manual Update] {notes}" if existing_notes else f"[Manual Update] {notes}"
+            ).strip()
+        
+        update_provider_state(
+            campaign_id=campaign_id,
+            provider_id=provider_id,
+            new_status=new_status,
+            **update_kwargs,
+        )
+        
+        return {
+            "campaign_id": campaign_id,
+            "provider_id": provider_id,
+            "status": new_status.value,
+            "previous_status": provider.status.value,
+            "message": f"Provider status updated to {new_status.value}",
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        log.error(
+            "provider_status_update_failed",
+            campaign_id=campaign_id,
+            provider_id=provider_id,
+            error=str(e),
+        )
         raise HTTPException(status_code=500, detail=str(e))
 
 

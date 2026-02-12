@@ -645,6 +645,65 @@ def list_all_campaigns(limit: int = 50) -> list[CampaignRecord]:
         return []
 
 
+def delete_campaign(campaign_id: str, delete_providers: bool = False) -> None:
+    """
+    Delete a campaign record from DynamoDB.
+    
+    Optionally deletes all associated provider records and events.
+    
+    Args:
+        campaign_id: Campaign identifier
+        delete_providers: If True, also delete all provider records for this campaign
+        
+    Raises:
+        DynamoDBError: On DynamoDB failures
+    """
+    table = _get_table()
+    
+    try:
+        # Delete campaign record
+        table.delete_item(
+            Key={"PK": f"CAMPAIGN#{campaign_id}", "SK": "METADATA"},
+        )
+        log.info("campaign_deleted", campaign_id=campaign_id)
+        
+        if delete_providers:
+            # Delete all providers for this campaign
+            providers = list_campaign_providers(campaign_id)
+            with table.batch_writer() as batch:
+                for provider in providers:
+                    key = ProviderKey(campaign_id, provider.provider_id)
+                    batch.delete_item(Key=key.to_key())
+            log.info(
+                "campaign_providers_deleted",
+                campaign_id=campaign_id,
+                provider_count=len(providers),
+            )
+            
+            # Delete all events for this campaign
+            events = list_campaign_events(campaign_id, limit=1000)
+            with table.batch_writer() as batch:
+                for event in events:
+                    batch.delete_item(
+                        Key={
+                            "PK": f"EVENTS#{campaign_id}",
+                            "SK": f"EVT#{event.timestamp_ms}",
+                        }
+                    )
+            log.info(
+                "campaign_events_deleted",
+                campaign_id=campaign_id,
+                event_count=len(events),
+            )
+    except ClientError as e:
+        log.error("campaign_delete_failed", campaign_id=campaign_id, error=str(e))
+        raise DynamoDBError(
+            operation="delete",
+            table_name=get_settings().dynamodb_table_name,
+            error_message=str(e),
+        ) from e
+
+
 # =====================================================
 # Event Record Operations
 # =====================================================
