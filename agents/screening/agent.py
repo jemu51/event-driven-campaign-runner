@@ -30,13 +30,13 @@ from agents.screening.models import (
     ScreeningResult,
 )
 from agents.screening.prompts import get_system_prompt
+from agents.screening import tools as screening_tools
 from agents.screening.tools import (
     classify_response,
     determine_screening_outcome,
     evaluate_document_ocr,
     extract_keywords,
     map_decision_to_status,
-    trigger_textract_async,
 )
 from agents.shared.exceptions import ProviderNotFoundError, RecruitmentError
 from agents.shared.models.events import (
@@ -363,7 +363,7 @@ def handle_provider_response_received(
             # Check if attachment is a processable document
             if attachment.content_type in ["application/pdf", "image/jpeg", "image/png"]:
                 try:
-                    job_info = trigger_textract_async(
+                    job_info = screening_tools.trigger_textract_async(
                         document_s3_path=attachment.s3_path,
                         campaign_id=event.campaign_id,
                         provider_id=event.provider_id,
@@ -429,7 +429,9 @@ def handle_provider_response_received(
             existing_documents_uploaded=list(provider_state.documents_uploaded),
         )
         
-        new_status = ProviderStatus.from_string(map_decision_to_status(result.decision))
+        new_status = ProviderStatus.from_string(
+            map_decision_to_status(result.decision, provider_state.status.value)
+        )
     
     # 8. Validate state transition
     validate_transition(provider_state.status, new_status)
@@ -642,7 +644,9 @@ def handle_document_processed(
         existing_documents_uploaded=documents_uploaded,
     )
     
-    new_status = ProviderStatus.from_string(map_decision_to_status(result.decision))
+    new_status = ProviderStatus.from_string(
+        map_decision_to_status(result.decision, provider_state.status.value)
+    )
     
     # 7. Validate state transition
     validate_transition(provider_state.status, new_status)

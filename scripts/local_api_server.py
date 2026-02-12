@@ -41,7 +41,11 @@ from moto import mock_aws
 mock = mock_aws()
 mock.start()
 
+import logging
 import structlog
+
+# Set root logging level so structlog info/error messages are visible
+logging.basicConfig(format="%(message)s", stream=sys.stdout, level=logging.INFO)
 
 # Configure logging
 structlog.configure(

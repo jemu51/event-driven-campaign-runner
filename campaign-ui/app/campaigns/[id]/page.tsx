@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import { useCampaign } from '@/hooks/useCampaign';
-import ProviderCard from '@/components/ProviderCard';
+import ProviderInbox from '@/components/ProviderInbox';
 import EventStream from '@/components/EventStream';
 import { STATUS_COLORS, STATUS_LABELS, CAMPAIGN_STATUS_COLORS, PROVIDER_STATUS_ORDER } from '@/lib/types';
 
@@ -90,26 +90,21 @@ export default function CampaignPage() {
         })}
       </div>
 
-      {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Provider Cards */}
-        <div className="lg:col-span-2 space-y-4">
+      {/* Provider Inbox + Event Stream side-by-side */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Provider Inbox (WhatsApp-style) */}
+        <div className="lg:col-span-3 space-y-3">
           <h2 className="text-lg font-semibold text-primary">
-            Providers
+            Provider Inbox
             <span className="text-sm font-normal text-gray-70 ml-2">
-              Click a provider to view conversation
+              Select a provider to view conversation
             </span>
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {campaign.providers.map((provider) => (
-              <ProviderCard
-                key={provider.provider_id}
-                provider={provider}
-                campaignId={campaignId}
-                onSimulated={refresh}
-              />
-            ))}
-          </div>
+          <ProviderInbox
+            providers={campaign.providers}
+            campaignId={campaignId}
+            onSimulated={refresh}
+          />
         </div>
 
         {/* Event Stream */}

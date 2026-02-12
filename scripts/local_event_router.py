@@ -3,6 +3,11 @@ Local Event Router
 
 Routes events in-process instead of using EventBridge.
 Used for local development and testing.
+
+Events emitted during handler execution (re-entrant calls) are deferred
+to a queue and processed sequentially after the current handler completes.
+This mirrors AWS EventBridge behaviour where events are delivered
+asynchronously and handlers never nest.
 """
 
 import json
@@ -15,13 +20,26 @@ from agents.shared.models.events import BaseEvent
 
 log = structlog.get_logger()
 
-# In-memory event queue for UI
+# In-memory event queue for UI (SSE stream)
 event_queue: list[dict[str, Any]] = []
+
+# --- Deferred-event queue ---------------------------------------------------
+# When a handler emits a new event (e.g. mock Textract emitting
+# DocumentProcessed inside handle_provider_response_received), the event is
+# appended here instead of being processed immediately.  After the top-level
+# handler returns and its state is saved, the queue is drained one event at a
+# time — exactly like EventBridge in production.
+_deferred_queue: list[tuple[str, dict[str, Any]]] = []
+_handling: bool = False
 
 
 def local_event_router(detail_type: str, detail: dict[str, Any]) -> Any:
     """
     Route event to appropriate agent handler.
+
+    If called while another handler is already executing (re-entrant),
+    the event is queued and processed after the current handler completes.
+    This mirrors AWS EventBridge behaviour where events are never nested.
 
     Args:
         detail_type: EventBridge detail-type
@@ -29,6 +47,53 @@ def local_event_router(detail_type: str, detail: dict[str, Any]) -> Any:
 
     Returns:
         Handler result or None
+    """
+    global _handling
+
+    if _handling:
+        # Re-entrant call — queue for processing after the current handler
+        _deferred_queue.append((detail_type, detail))
+        log.warning(
+            "event_deferred",
+            detail_type=detail_type,
+            campaign_id=detail.get("campaign_id"),
+            queue_depth=len(_deferred_queue),
+        )
+        return None
+
+    _handling = True
+    try:
+        result = _route_and_handle(detail_type, detail)
+
+        # Drain events that were emitted during handling.
+        # Each handler may itself emit more events — they also get queued
+        # and are picked up on subsequent iterations.
+        if _deferred_queue:
+            log.warning(
+                "deferred_queue_drain_start",
+                queue_size=len(_deferred_queue),
+                events=[dt for dt, _ in _deferred_queue],
+            )
+        while _deferred_queue:
+            deferred_type, deferred_detail = _deferred_queue.pop(0)
+            log.warning(
+                "processing_deferred_event",
+                detail_type=deferred_type,
+                campaign_id=deferred_detail.get("campaign_id"),
+            )
+            _route_and_handle(deferred_type, deferred_detail)
+
+        return result
+    finally:
+        _handling = False
+
+
+def _route_and_handle(detail_type: str, detail: dict[str, Any]) -> Any:
+    """
+    Execute a single event through its handler.
+
+    This is the core routing logic, extracted so it can be called both for
+    the initial event and for each deferred event without re-entry guards.
     """
     # Lazy imports to avoid circular dependencies
     from agents.campaign_planner.agent import handle_new_campaign_requested
@@ -41,6 +106,17 @@ def local_event_router(detail_type: str, detail: dict[str, Any]) -> Any:
         handle_provider_response_received,
     )
 
+    def handle_screening_completed(detail_type: str, detail: dict[str, Any]) -> None:
+        """
+        Handle ScreeningCompleted event.
+
+        This is a no-op handler that allows the post-handler logic to run.
+        The actual work (confirmation email, campaign completion) is done
+        in the post-handler block below.
+        """
+        log.info("screening_completed_received", detail=detail)
+        return None
+
     handlers = {
         "NewCampaignRequested": handle_new_campaign_requested,
         "SendMessageRequested": handle_send_message_requested,
@@ -48,6 +124,7 @@ def local_event_router(detail_type: str, detail: dict[str, Any]) -> Any:
         "DocumentProcessed": handle_document_processed,
         "ReplyToProviderRequested": handle_reply_to_provider_requested,
         "FollowUpTriggered": handle_send_message_requested,  # Same handler
+        "ScreeningCompleted": handle_screening_completed,
     }
 
     handler = handlers.get(detail_type)
@@ -87,12 +164,16 @@ def local_event_router(detail_type: str, detail: dict[str, Any]) -> Any:
     log.info(
         "routing_event",
         detail_type=detail_type,
-        campaign_id=detail.get("campaign_id"),
+        campaign_id=campaign_id,
     )
 
     try:
         result = handler(detail_type, detail)
-        log.info("event_handled", detail_type=detail_type, success=True)
+        log.warning(
+            "event_handled_ok",
+            detail_type=detail_type,
+            campaign_id=campaign_id,
+        )
 
         # Handle ScreeningCompleted -> trigger confirmation email + check campaign status
         if detail_type == "ScreeningCompleted":
@@ -104,10 +185,11 @@ def local_event_router(detail_type: str, detail: dict[str, Any]) -> Any:
 
         return result
     except Exception as e:
-        log.error(
-            "event_handler_failed",
+        log.warning(
+            "event_handler_FAILED",
             detail_type=detail_type,
             error=str(e),
+            error_type=type(e).__name__,
             exc_info=True,
         )
         # Don't re-raise to keep the system running

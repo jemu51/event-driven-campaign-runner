@@ -17,9 +17,26 @@ export default function EventStream() {
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-30 flex flex-col h-full">
-      <div className="flex items-center justify-between p-4 border-b border-gray-30">
-        <div className="flex items-center gap-2">
+      <div className="p-4 border-b border-gray-30">
+        <div className="flex items-center justify-between">
           <h3 className="font-semibold text-primary">Live Events</h3>
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={togglePause}
+              className="text-xs px-2.5 py-1 rounded-md border border-gray-40 hover:bg-gray-20 transition-colors"
+            >
+              {paused ? 'Resume' : 'Pause'}
+            </button>
+            <button
+              onClick={clearEvents}
+              className="text-xs px-2.5 py-1 rounded-md border border-gray-40 hover:bg-gray-20 transition-colors"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 mt-1.5">
+          <span className="text-xs text-gray-60">{events.length} events</span>
           <span
             className={`inline-flex h-2 w-2 rounded-full ${
               connected ? 'bg-green-60 animate-pulse' : 'bg-red-60'
@@ -28,21 +45,6 @@ export default function EventStream() {
           <span className="text-xs text-gray-60">
             {connected ? 'Connected' : 'Disconnected'}
           </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={togglePause}
-            className="text-xs px-2.5 py-1 rounded-md border border-gray-40 hover:bg-gray-20 transition-colors"
-          >
-            {paused ? 'Resume' : 'Pause'}
-          </button>
-          <button
-            onClick={clearEvents}
-            className="text-xs px-2.5 py-1 rounded-md border border-gray-40 hover:bg-gray-20 transition-colors"
-          >
-            Clear
-          </button>
-          <span className="text-xs text-gray-60">{events.length} events</span>
         </div>
       </div>
 

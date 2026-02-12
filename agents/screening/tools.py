@@ -729,12 +729,16 @@ def determine_screening_outcome(
     )
 
 
-def map_decision_to_status(decision: ScreeningDecision) -> str:
+def map_decision_to_status(
+    decision: ScreeningDecision,
+    current_status: str | None = None,
+) -> str:
     """
     Map screening decision to provider status.
     
     Args:
         decision: Screening decision
+        current_status: Current provider status (for context-aware mapping)
         
     Returns:
         Provider status string for state transition
@@ -747,4 +751,13 @@ def map_decision_to_status(decision: ScreeningDecision) -> str:
         ScreeningDecision.UNDER_REVIEW: "UNDER_REVIEW",
         ScreeningDecision.ESCALATED: "ESCALATED",
     }
+    
+    # Context-aware mapping: if in DOCUMENT_PROCESSING and need clarification,
+    # go to UNDER_REVIEW instead of WAITING_RESPONSE (invalid transition)
+    if (
+        decision == ScreeningDecision.NEEDS_CLARIFICATION
+        and current_status == "DOCUMENT_PROCESSING"
+    ):
+        return "UNDER_REVIEW"
+    
     return mapping.get(decision, "UNDER_REVIEW")
