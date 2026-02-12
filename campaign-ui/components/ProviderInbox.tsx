@@ -23,6 +23,7 @@ export default function ProviderInbox({ providers, campaignId, onSimulated }: Pr
   const [sending, setSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showScreeningNotes, setShowScreeningNotes] = useState(false);
 
   const selectedProvider = providers.find((p) => p.provider_id === selectedProviderId) || null;
 
@@ -45,6 +46,7 @@ export default function ProviderInbox({ providers, campaignId, onSimulated }: Pr
     setLoading(true);
     setError(null);
     setThread(null);
+    setShowScreeningNotes(false); // Reset screening notes visibility when provider changes
 
     getProviderConversation(campaignId, selectedProviderId)
       .then((data) => {
@@ -225,11 +227,22 @@ export default function ProviderInbox({ providers, campaignId, onSimulated }: Pr
                   </span>
                 )}
                 {selectedProvider.screening_notes && (
-                  <span className="inline-flex items-center px-2 py-0.5 bg-yellow-20 text-yellow-80 rounded text-[10px]">
-                    Has screening notes
-                  </span>
+                  <button
+                    onClick={() => setShowScreeningNotes(!showScreeningNotes)}
+                    className="inline-flex items-center px-2 py-0.5 bg-yellow-20 text-yellow-80 rounded text-[10px] hover:bg-yellow-30 transition-colors cursor-pointer"
+                  >
+                    {showScreeningNotes ? 'Hide screening notes' : 'Has screening notes'}
+                  </button>
                 )}
               </div>
+              {/* Screening notes display */}
+              {showScreeningNotes && selectedProvider.screening_notes && (
+                <div className="mt-3 pt-3 border-t border-gray-30">
+                  <p className="text-xs text-gray-80 bg-white rounded-lg p-3 border border-gray-30 whitespace-pre-wrap">
+                    {selectedProvider.screening_notes}
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Messages area */}
