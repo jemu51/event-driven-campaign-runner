@@ -544,6 +544,7 @@ def determine_screening_outcome(
     travel_required: bool,
     existing_equipment_confirmed: list[str] | None = None,
     existing_documents_uploaded: list[str] | None = None,
+    existing_travel_confirmed: bool | None = None,
 ) -> ScreeningResult:
     """
     Determine the screening outcome based on all available information.
@@ -562,6 +563,7 @@ def determine_screening_outcome(
         travel_required: Whether travel is required
         existing_equipment_confirmed: Previously confirmed equipment
         existing_documents_uploaded: Previously uploaded documents
+        existing_travel_confirmed: Previously confirmed travel willingness
         
     Returns:
         ScreeningResult with decision and reasoning
@@ -604,10 +606,12 @@ def determine_screening_outcome(
     
     documents_pending = [doc for doc in required_documents if doc not in documents_validated]
     
-    # Determine travel status
+    # Determine travel status - prefer keyword_extraction, fall back to existing state
     travel_confirmed = None
-    if keyword_extraction:
+    if keyword_extraction and keyword_extraction.travel_confirmed is not None:
         travel_confirmed = keyword_extraction.travel_confirmed
+    elif existing_travel_confirmed is not None:
+        travel_confirmed = existing_travel_confirmed
     
     # Build reasoning
     reasoning_parts: list[str] = []
@@ -647,10 +651,17 @@ def determine_screening_outcome(
                 f"Missing: {', '.join(equipment_missing)}"
             )
     
-    # Check travel requirement
+    # Check travel requirement - only block if there's a problem
     elif travel_required and travel_confirmed is False:
         decision = ScreeningDecision.REJECTED
         reasoning_parts.append("Provider cannot travel but travel is required")
+    
+    elif travel_required and travel_confirmed is None:
+        # Travel required but not yet confirmed - need clarification
+        decision = ScreeningDecision.NEEDS_CLARIFICATION
+        reasoning_parts.append("Travel requirement not yet confirmed")
+        questions.append("Are you willing and able to travel for this opportunity?")
+        next_action = "send_follow_up"
     
     # Check document requirements
     elif documents_pending:

@@ -427,6 +427,7 @@ def handle_provider_response_received(
             travel_required=travel_required,
             existing_equipment_confirmed=list(provider_state.equipment_confirmed),
             existing_documents_uploaded=list(provider_state.documents_uploaded),
+            existing_travel_confirmed=provider_state.travel_confirmed,
         )
         
         new_status = ProviderStatus.from_string(
@@ -642,6 +643,7 @@ def handle_document_processed(
         travel_required=travel_required,
         existing_equipment_confirmed=list(provider_state.equipment_confirmed),
         existing_documents_uploaded=documents_uploaded,
+        existing_travel_confirmed=provider_state.travel_confirmed,
     )
     
     new_status = ProviderStatus.from_string(
