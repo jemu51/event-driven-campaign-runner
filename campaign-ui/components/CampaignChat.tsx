@@ -37,6 +37,13 @@ export default function CampaignChat({ currentFormData, onFieldsExtracted }: Cam
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e as unknown as React.FormEvent);
+    }
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-30 flex flex-col h-[600px]">
       {/* Header */}
@@ -105,14 +112,15 @@ export default function CampaignChat({ currentFormData, onFieldsExtracted }: Cam
 
       {/* Input */}
       <form onSubmit={handleSubmit} className="p-4 border-t border-gray-30">
-        <div className="flex gap-2">
-          <input
-            type="text"
+        <div className="flex gap-2 items-end">
+          <textarea
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={handleKeyDown}
             placeholder="Type your message..."
             disabled={loading}
-            className="flex-1 px-3 py-2 border border-gray-40 rounded-lg text-sm focus:ring-2 focus:ring-indigo-60 focus:border-indigo-60 disabled:bg-gray-20 disabled:cursor-not-allowed"
+            rows={2}
+            className="flex-1 min-h-[60px] max-h-32 px-3 py-2 border border-gray-40 rounded-lg text-sm focus:ring-2 focus:ring-indigo-60 focus:border-indigo-60 disabled:bg-gray-20 disabled:cursor-not-allowed resize-none overflow-y-auto"
           />
           <button
             type="submit"

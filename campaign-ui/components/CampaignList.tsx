@@ -57,7 +57,7 @@ export default function CampaignList({ onSelectCampaign }: CampaignListProps) {
           No campaigns yet. Create one to get started.
         </p>
       ) : (
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {campaigns.map((campaign) => {
             const statusColor = CAMPAIGN_STATUS_COLORS[campaign.status] || 'bg-gray-20 text-gray-80';
             return (
