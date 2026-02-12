@@ -1,0 +1,14 @@
+{
+  "provider_id": "prov-mil-004",
+  "provider_name": "Rachel Green",
+  "email": "rachel.green@wisconsintech.net",
+  "market": "milwaukee",
+  "demo_scenario": "equipment_no_insurance",
+  "expected_outcome": "WAITING_DOCUMENT",
+  "email_response": {
+    "subject": "Re: OPPORTUNITY: Satellite Upgrade technicians needed in Milwaukee",
+    "body": "Hello!\n\nThank you for reaching out about the satellite project. I'm interested!\n\nI have the following equipment ready:\n- Bucket truck (International with 48ft aerial lift)\n- Spectrum analyzer (Keysight FieldFox)\n- OTDR (Viavi MTS-2000)\n\nI'm BICSI certified and CompTIA Network+ certified. I've been doing this type of work for 8 years with an excellent track record.\n\nI can travel anywhere in Wisconsin and the upper Midwest. Very flexible with scheduling.\n\nLooking forward to hearing more details!\n\nRachel Green\nWisconsin Tech Services\n(414) 555-0876",
+    "has_attachment": false,
+    "attachment_filename": null
+  }
+}

@@ -1,0 +1,181 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Email Configuration",
+  "description": "Email specification for SES outbound/inbound handling",
+  "version": "1.0.0",
+
+  "ses": {
+    "domain": "${SES_DOMAIN}",
+    "fromAddress": "recruitment@${SES_DOMAIN}",
+    "fromName": "Recruitment Team",
+    "configurationSet": "recruitment-tracking",
+    "rateLimits": {
+      "maxPerSecond": 14,
+      "maxPerDay": 50000
+    }
+  },
+
+  "replyTo": {
+    "description": "Reply-To address encoding for provider identification",
+    "format": "campaign+{campaign_id}_provider+{provider_id}@{domain}",
+    "pattern": "^campaign\\+([a-zA-Z0-9-]+)_provider\\+([a-zA-Z0-9-]+)@(.+)$",
+    "components": {
+      "campaign_id": {
+        "position": 1,
+        "description": "Campaign identifier extracted from group 1"
+      },
+      "provider_id": {
+        "position": 2,
+        "description": "Provider identifier extracted from group 2"
+      },
+      "domain": {
+        "position": 3,
+        "description": "Email domain extracted from group 3"
+      }
+    },
+    "encoding": {
+      "algorithm": "Template replacement with URL-safe characters",
+      "example": {
+        "input": {
+          "campaign_id": "satellite-upgrade-2026-02",
+          "provider_id": "prov-001",
+          "domain": "recruitment.example.com"
+        },
+        "output": "campaign+satellite-upgrade-2026-02_provider+prov-001@recruitment.example.com"
+      }
+    },
+    "decoding": {
+      "algorithm": "Regex capture groups",
+      "pythonCode": "match = re.match(pattern, reply_to_address); campaign_id = match.group(1); provider_id = match.group(2)",
+      "fallback": "Check To header if Reply-To parsing fails"
+    }
+  },
+
+  "inbound": {
+    "receiptRuleSet": "recruitment-inbound",
+    "snsTopicArn": "arn:aws:sns:${AWS_REGION}:${AWS_ACCOUNT_ID}:recruitment-inbound-emails",
+    "s3BucketPrefix": "inbound-emails/",
+    "maxAttachmentSizeBytes": 10485760,
+    "allowedMimeTypes": [
+      "text/plain",
+      "text/html",
+      "application/pdf",
+      "image/jpeg",
+      "image/png",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    ]
+  },
+
+  "templates": {
+    "baseDirectory": "agents/communication/templates",
+    "format": "jinja2",
+    "encoding": "utf-8",
+    "types": {
+      "initial_outreach": {
+        "file": "initial_outreach.txt",
+        "subject": "Opportunity: {campaign_type} technicians needed in {market}",
+        "requiredVariables": [
+          "provider_name",
+          "campaign_type",
+          "market",
+          "equipment_list",
+          "insurance_requirement"
+        ]
+      },
+      "follow_up": {
+        "file": "follow_up.txt",
+        "subject": "Re: Opportunity: {campaign_type} in {market} - Follow Up",
+        "requiredVariables": [
+          "provider_name",
+          "days_since_contact",
+          "original_requirements"
+        ]
+      },
+      "missing_document": {
+        "file": "missing_document.txt",
+        "subject": "Re: {campaign_type} - Document Required",
+        "requiredVariables": [
+          "provider_name",
+          "missing_documents",
+          "deadline"
+        ]
+      },
+      "clarification": {
+        "file": "clarification.txt",
+        "subject": "Re: {campaign_type} - Quick Question",
+        "requiredVariables": [
+          "provider_name",
+          "question"
+        ]
+      },
+      "qualified_confirmation": {
+        "file": "qualified_confirmation.txt",
+        "subject": "{campaign_type} - You're Qualified!",
+        "requiredVariables": [
+          "provider_name",
+          "campaign_type",
+          "market",
+          "next_steps"
+        ]
+      },
+      "rejection": {
+        "file": "rejection.txt",
+        "subject": "Re: {campaign_type} - Application Status",
+        "requiredVariables": [
+          "provider_name",
+          "reason"
+        ]
+      }
+    }
+  },
+
+  "threading": {
+    "description": "Email thread tracking configuration",
+    "messageIdHeader": "Message-ID",
+    "inReplyToHeader": "In-Reply-To",
+    "referencesHeader": "References",
+    "threadIdGeneration": "Use first Message-ID as thread anchor"
+  },
+
+  "parsing": {
+    "bodyExtraction": {
+      "preferPlainText": true,
+      "stripSignatures": true,
+      "stripQuotedReplies": true,
+      "signaturePatterns": [
+        "^--\\s*$",
+        "^Sent from my",
+        "^On .* wrote:$",
+        "^>.*$"
+      ],
+      "maxBodyLength": 10000
+    },
+    "attachmentExtraction": {
+      "saveToS3": true,
+      "s3PathPattern": "attachments/{campaign_id}/{provider_id}/{timestamp}/{filename}",
+      "generatePresignedUrl": false,
+      "presignedUrlExpirySeconds": 3600
+    }
+  },
+
+  "errorHandling": {
+    "bounceHandling": {
+      "snsTopicArn": "arn:aws:sns:${AWS_REGION}:${AWS_ACCOUNT_ID}:recruitment-email-bounces",
+      "updateProviderStatus": true,
+      "statusOnPermanentBounce": "ESCALATED"
+    },
+    "complaintHandling": {
+      "snsTopicArn": "arn:aws:sns:${AWS_REGION}:${AWS_ACCOUNT_ID}:recruitment-email-complaints",
+      "updateProviderStatus": true,
+      "statusOnComplaint": "REJECTED"
+    }
+  },
+
+  "notes": [
+    "Reply-To encoding is the ONLY identity mechanism for inbound replies",
+    "Templates use Jinja2 syntax with {{ variable }} placeholders",
+    "All environment variables (${VAR}) must be set before deployment",
+    "SES must be in production mode (not sandbox) for sending to unverified addresses"
+  ]
+}

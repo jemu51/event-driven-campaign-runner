@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+/* Design system color palette - grayscale and semantic colors */
+@theme {
+  /* Grayscale */
+  --color-gray-10: #f8f9fc;
+  --color-gray-20: #f2f4f8;
+  --color-gray-30: #edeff3;
+  --color-gray-40: #dee2e7;
+  --color-gray-50: #c4cad4;
+  --color-gray-60: #97a2b4;
+  --color-gray-70: #7d88a1;
+  --color-gray-80: #636b88;
+  --color-gray-90: #454e6e;
+  --color-gray-100: #162741;
+  /* Red - error, warning, crucial */
+  --color-red-20: #fde8ea;
+  --color-red-40: #febec4;
+  --color-red-60: #f25a68;
+  --color-red-80: #cd3745;
+  --color-red-100: #a51d2b;
+  /* Orange - data annotation */
+  --color-orange-20: #ffd7bd;
+  --color-orange-40: #fba76f;
+  --color-orange-60: #f16a22;
+  --color-orange-80: #d04d0b;
+  --color-orange-100: #9e3a00;
+  /* Yellow - attention, waiting */
+  --color-yellow-20: #fff2db;
+  --color-yellow-40: #ffd58a;
+  --color-yellow-60: #ffb838;
+  --color-yellow-80: #e6910a;
+  --color-yellow-100: #985e01;
+  /* Green - success, complete */
+  --color-green-20: #e6f9f1;
+  --color-green-40: #afe9d1;
+  --color-green-60: #1fa881;
+  --color-green-80: #148555;
+  --color-green-100: #085e38;
+  /* Teal - date annotation */
+  --color-teal-20: #d2f3f3;
+  --color-teal-40: #9de7e5;
+  --color-teal-60: #13aeac;
+  --color-teal-80: #14807e;
+  --color-teal-100: #036362;
+  /* Blue - informative, trust */
+  --color-blue-20: #e0f2ff;
+  --color-blue-40: #9ed4fa;
+  --color-blue-60: #268ed9;
+  --color-blue-80: #0062a8;
+  --color-blue-100: #054d80;
+  /* Indigo - action, CTAs */
+  --color-indigo-20: #d9dcf2;
+  --color-indigo-40: #97a1e7;
+  --color-indigo-60: #4051bf;
+  --color-indigo-80: #23339a;
+  --color-indigo-100: #0c186a;
+  /* Purple */
+  --color-purple-20: #f4d4fc;
+  --color-purple-40: #d2a9e5;
+  --color-purple-60: #753b9d;
+  --color-purple-80: #521877;
+  --color-purple-100: #370b51;
+}
+
+:root {
+  --background: var(--color-gray-10);
+  --foreground: var(--color-gray-100);
+}
+
+/* Ensure primary text is always visible (design-system dark) */
+.text-primary {
+  color: var(--foreground);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}

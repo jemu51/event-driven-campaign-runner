@@ -1,0 +1,14 @@
+{
+  "provider_id": "prov-mil-001",
+  "provider_name": "Tom Anderson",
+  "email": "tom.anderson@brewcitytech.com",
+  "market": "milwaukee",
+  "demo_scenario": "complete_equipment_valid_insurance",
+  "expected_outcome": "QUALIFIED",
+  "email_response": {
+    "subject": "Re: OPPORTUNITY: Satellite Upgrade technicians needed in Milwaukee",
+    "body": "Hello!\n\nI'm very interested in the satellite upgrade project in Milwaukee!\n\nI'm fully equipped:\n- Bucket truck: 2021 Kenworth T270 with Elliott aerial device\n- Spectrum analyzer: Tektronix RSA306B\n- Extension ladder: 32ft fiberglass\n\nI have my CompTIA Network+ certification and OSHA-10 card. I've completed 89 jobs with a 4.6 rating and zero safety incidents.\n\nHappy to travel throughout Wisconsin and the surrounding states. I'm attaching my current insurance - $2.5M liability coverage through Nationwide, expires August 2027.\n\nLet me know how to proceed!\n\nTom Anderson\nBrew City Tech\n(414) 555-0321",
+    "has_attachment": true,
+    "attachment_filename": "Insurance_Certificate_TomAnderson_Nationwide_2027.pdf"
+  }
+}

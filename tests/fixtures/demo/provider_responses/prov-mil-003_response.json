@@ -1,0 +1,14 @@
+{
+  "provider_id": "prov-mil-003",
+  "provider_name": "Kevin Murphy",
+  "email": "kevin.murphy@midwestsolutions.com",
+  "market": "milwaukee",
+  "demo_scenario": "expired_insurance",
+  "expected_outcome": "REJECTED",
+  "email_response": {
+    "subject": "Re: OPPORTUNITY: Satellite Upgrade technicians needed in Milwaukee",
+    "body": "Good morning!\n\nI'd like to participate in the satellite upgrade project.\n\nMy equipment includes:\n- Spectrum analyzer (Anritsu MS2721B)\n- Cable tester (Fluke CableIQ)\n- OTDR (EXFO MaxTester)\n\nI should note that I don't currently have a bucket truck - I usually rent one for aerial work. Would that be acceptable?\n\nI'm CompTIA Network+ certified and hold an FCC license. Willing to travel throughout the Midwest.\n\nI'm attaching my insurance certificate. Please let me know if additional documentation is needed.\n\nRegards,\nKevin Murphy\nMidwest Solutions\n(920) 555-0987",
+    "has_attachment": true,
+    "attachment_filename": "Insurance_Certificate_KevinMurphy_Expired_2025.pdf"
+  }
+}

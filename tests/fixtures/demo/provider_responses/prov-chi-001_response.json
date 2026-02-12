@@ -1,0 +1,14 @@
+{
+  "provider_id": "prov-chi-001",
+  "provider_name": "David Martinez",
+  "email": "david.martinez@windycitytech.com",
+  "market": "chicago",
+  "demo_scenario": "complete_equipment_valid_insurance",
+  "expected_outcome": "QUALIFIED",
+  "email_response": {
+    "subject": "Re: OPPORTUNITY: Satellite Upgrade technicians needed in Chicago",
+    "body": "Good morning!\n\nI'm very interested in the satellite upgrade project you have available in Chicago.\n\nI'm fully equipped for this type of work:\n- Bucket truck: 2023 Freightliner M2 with Altec AA55E aerial device\n- Spectrum analyzer: Anritsu MS2760A ultraportable\n- Fiber splicer: Fujikura 90S+\n\nI've been in the telecommunications field for 12 years with extensive satellite and antenna work experience. I'm CompTIA Network+ certified, BICSI certified, and OSHA-10 trained.\n\nI'm happy to travel throughout the Chicago metro and Midwest region. Attached is my current insurance certificate - $2.5M general liability coverage through Travelers Insurance, valid through March 2027.\n\nLooking forward to working with you!\n\nDavid Martinez\nWindy City Tech Services\n(312) 555-0456",
+    "has_attachment": true,
+    "attachment_filename": "Insurance_Certificate_DavidMartinez_Travelers_2027.pdf"
+  }
+}

@@ -1,0 +1,250 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Document Types and Extraction Rules",
+  "description": "Supported document classifications and Textract extraction rules",
+  "version": "1.0.0",
+
+  "documentTypes": {
+    "insurance_certificate": {
+      "description": "Proof of liability insurance coverage",
+      "required": true,
+      "mimeTypes": ["application/pdf", "image/jpeg", "image/png"],
+      "maxSizeBytes": 10485760,
+      "extractionRules": {
+        "fields": [
+          {
+            "name": "expiry_date",
+            "type": "date",
+            "required": true,
+            "patterns": [
+              "(?i)expir(?:es?|ation|y)\\s*(?:date)?\\s*:?\\s*(\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4})",
+              "(?i)valid\\s*(?:until|through|to)\\s*:?\\s*(\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4})",
+              "(?i)policy\\s*end\\s*(?:date)?\\s*:?\\s*(\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4})"
+            ],
+            "validation": {
+              "rule": "date_after_today",
+              "errorMessage": "Insurance certificate has expired"
+            }
+          },
+          {
+            "name": "coverage_amount",
+            "type": "currency",
+            "required": true,
+            "patterns": [
+              "(?i)(?:general\\s*)?(?:aggregate|liability)\\s*(?:limit)?\\s*:?\\s*\\$?([\\d,]+(?:\\.\\d{2})?)",
+              "(?i)each\\s*occurrence\\s*:?\\s*\\$?([\\d,]+(?:\\.\\d{2})?)",
+              "(?i)coverage\\s*(?:amount|limit)\\s*:?\\s*\\$?([\\d,]+(?:\\.\\d{2})?)"
+            ],
+            "validation": {
+              "rule": "minimum_value",
+              "value": 2000000,
+              "errorMessage": "Insurance coverage below $2M minimum"
+            }
+          },
+          {
+            "name": "policy_holder",
+            "type": "string",
+            "required": true,
+            "patterns": [
+              "(?i)(?:named\\s*)?insured\\s*:?\\s*([A-Za-z][A-Za-z0-9\\s&,.'-]+)",
+              "(?i)policy\\s*holder\\s*:?\\s*([A-Za-z][A-Za-z0-9\\s&,.'-]+)"
+            ]
+          },
+          {
+            "name": "policy_number",
+            "type": "string",
+            "required": false,
+            "patterns": [
+              "(?i)policy\\s*(?:no\\.?|number|#)\\s*:?\\s*([A-Z0-9-]+)"
+            ]
+          },
+          {
+            "name": "insurance_company",
+            "type": "string",
+            "required": false,
+            "patterns": [
+              "(?i)(?:insurance\\s*)?(?:company|carrier|insurer)\\s*:?\\s*([A-Za-z][A-Za-z0-9\\s&,.'-]+)"
+            ]
+          }
+        ],
+        "textractFeatures": ["FORMS", "TABLES"],
+        "confidenceThreshold": 0.8
+      },
+      "s3PathPattern": "documents/{campaign_id}/{provider_id}/insurance/{filename}"
+    },
+
+    "license": {
+      "description": "Professional or trade license",
+      "required": false,
+      "mimeTypes": ["application/pdf", "image/jpeg", "image/png"],
+      "maxSizeBytes": 10485760,
+      "extractionRules": {
+        "fields": [
+          {
+            "name": "license_number",
+            "type": "string",
+            "required": true,
+            "patterns": [
+              "(?i)license\\s*(?:no\\.?|number|#)\\s*:?\\s*([A-Z0-9-]+)"
+            ]
+          },
+          {
+            "name": "expiry_date",
+            "type": "date",
+            "required": true,
+            "patterns": [
+              "(?i)expir(?:es?|ation|y)\\s*(?:date)?\\s*:?\\s*(\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4})",
+              "(?i)valid\\s*(?:until|through|to)\\s*:?\\s*(\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4})"
+            ],
+            "validation": {
+              "rule": "date_after_today",
+              "errorMessage": "License has expired"
+            }
+          },
+          {
+            "name": "license_type",
+            "type": "string",
+            "required": false,
+            "patterns": [
+              "(?i)(?:license\\s*)?type\\s*:?\\s*([A-Za-z][A-Za-z0-9\\s-]+)"
+            ]
+          },
+          {
+            "name": "holder_name",
+            "type": "string",
+            "required": true,
+            "patterns": [
+              "(?i)(?:issued\\s*to|name|holder)\\s*:?\\s*([A-Za-z][A-Za-z\\s,.'-]+)"
+            ]
+          }
+        ],
+        "textractFeatures": ["FORMS"],
+        "confidenceThreshold": 0.8
+      },
+      "s3PathPattern": "documents/{campaign_id}/{provider_id}/license/{filename}"
+    },
+
+    "certification": {
+      "description": "Industry certification (CompTIA, BICSI, FCC, etc.)",
+      "required": false,
+      "mimeTypes": ["application/pdf", "image/jpeg", "image/png"],
+      "maxSizeBytes": 10485760,
+      "extractionRules": {
+        "fields": [
+          {
+            "name": "certification_name",
+            "type": "string",
+            "required": true,
+            "patterns": [
+              "(?i)(CompTIA\\s*Network\\+)",
+              "(?i)(BICSI\\s*[A-Za-z0-9]+)",
+              "(?i)(FCC\\s*(?:License|Certification))",
+              "(?i)certif(?:ied|ication)\\s*(?:in|for)?\\s*:?\\s*([A-Za-z][A-Za-z0-9\\s-]+)"
+            ]
+          },
+          {
+            "name": "certification_id",
+            "type": "string",
+            "required": false,
+            "patterns": [
+              "(?i)(?:cert(?:ification)?\\s*)?(?:id|number|#)\\s*:?\\s*([A-Z0-9-]+)"
+            ]
+          },
+          {
+            "name": "issue_date",
+            "type": "date",
+            "required": false,
+            "patterns": [
+              "(?i)issue(?:d)?\\s*(?:date)?\\s*:?\\s*(\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4})"
+            ]
+          },
+          {
+            "name": "expiry_date",
+            "type": "date",
+            "required": false,
+            "patterns": [
+              "(?i)expir(?:es?|ation|y)\\s*(?:date)?\\s*:?\\s*(\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4})"
+            ]
+          },
+          {
+            "name": "holder_name",
+            "type": "string",
+            "required": true,
+            "patterns": [
+              "(?i)(?:awarded\\s*to|name|holder|recipient)\\s*:?\\s*([A-Za-z][A-Za-z\\s,.'-]+)"
+            ]
+          }
+        ],
+        "textractFeatures": ["FORMS"],
+        "confidenceThreshold": 0.75
+      },
+      "s3PathPattern": "documents/{campaign_id}/{provider_id}/certification/{filename}"
+    },
+
+    "w9": {
+      "description": "IRS W-9 tax form",
+      "required": false,
+      "mimeTypes": ["application/pdf"],
+      "maxSizeBytes": 5242880,
+      "extractionRules": {
+        "fields": [
+          {
+            "name": "business_name",
+            "type": "string",
+            "required": true,
+            "patterns": [
+              "(?i)name\\s*\\(as\\s*shown\\s*on\\s*your\\s*income\\s*tax\\s*return\\)\\s*:?\\s*([A-Za-z][A-Za-z0-9\\s&,.'-]+)"
+            ]
+          },
+          {
+            "name": "tax_classification",
+            "type": "string",
+            "required": false,
+            "patterns": [
+              "(?i)(?:federal\\s*tax\\s*)?classification\\s*:?\\s*([A-Za-z][A-Za-z\\s/]+)"
+            ]
+          },
+          {
+            "name": "address",
+            "type": "string",
+            "required": false,
+            "patterns": []
+          }
+        ],
+        "textractFeatures": ["FORMS"],
+        "confidenceThreshold": 0.85
+      },
+      "s3PathPattern": "documents/{campaign_id}/{provider_id}/w9/{filename}"
+    }
+  },
+
+  "validationRules": {
+    "date_after_today": {
+      "description": "Validate date is in the future",
+      "implementation": "parsed_date > current_date"
+    },
+    "minimum_value": {
+      "description": "Validate numeric value meets minimum",
+      "implementation": "parsed_value >= minimum"
+    },
+    "pattern_match": {
+      "description": "Validate value matches regex pattern",
+      "implementation": "re.match(pattern, value)"
+    }
+  },
+
+  "processingConfig": {
+    "textractJobTimeoutSeconds": 300,
+    "maxRetries": 3,
+    "retryDelaySeconds": 5,
+    "outputFormat": "JSON",
+    "s3OutputPrefix": "textract-output/{campaign_id}/{provider_id}/"
+  },
+
+  "notes": [
+    "insurance_certificate is the only required document for the satellite upgrade demo",
+    "Patterns use Python regex syntax (re.search)",
+    "Confidence thresholds may be adjusted based on testing",
+    "S3 paths use template variables replaced at runtime"
+  ]
+}

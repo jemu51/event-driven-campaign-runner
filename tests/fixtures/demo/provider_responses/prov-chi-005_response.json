@@ -1,0 +1,14 @@
+{
+  "provider_id": "prov-chi-005",
+  "provider_name": "Chris Taylor",
+  "email": "chris.taylor@signalworks.com",
+  "market": "chicago",
+  "demo_scenario": "complete_equipment_valid_insurance",
+  "expected_outcome": "QUALIFIED",
+  "email_response": {
+    "subject": "Re: OPPORTUNITY: Satellite Upgrade technicians needed in Chicago",
+    "body": "Hi!\n\nCount me in for the satellite upgrade work.\n\nHere's what I bring to the table:\n- 2022 bucket truck with 55ft working height\n- Spectrum analyzer (Keysight)\n- Fiber fusion splicer (Sumitomo)\n\nI've been doing satellite and RF work for 6 years and I'm BICSI certified. Happy to travel wherever the work takes me.\n\nMy insurance certificate is attached - it's a $2M policy through Progressive, good through November 2027.\n\nReady to work!\n\nChris Taylor\nSignal Works Inc.\n(815) 555-0123",
+    "has_attachment": true,
+    "attachment_filename": "Insurance_Certificate_ChrisTaylor_Progressive_2027.pdf"
+  }
+}

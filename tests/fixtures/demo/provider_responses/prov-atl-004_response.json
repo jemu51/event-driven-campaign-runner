@@ -1,0 +1,14 @@
+{
+  "provider_id": "prov-atl-004",
+  "provider_name": "Lisa Chen",
+  "email": "lisa.chen@techelite.com",
+  "market": "atlanta",
+  "demo_scenario": "complete_equipment_valid_insurance",
+  "expected_outcome": "QUALIFIED",
+  "email_response": {
+    "subject": "Re: OPPORTUNITY: Satellite Upgrade technicians needed in Atlanta",
+    "body": "Hello!\n\nThank you for considering me for the satellite upgrade project. I'm very excited about this opportunity!\n\nEquipment confirmation:\n✓ Bucket truck - International CV with Terex HiRanger\n✓ Spectrum analyzer - Keysight N9320B\n✓ Full complement of hand tools and safety equipment\n\nI'm BICSI certified and also hold CompTIA Network+ certification. I've completed over 200 satellite installation and upgrade jobs with a 4.9 star rating.\n\nI'm absolutely willing to travel throughout the Atlanta area. I'm attaching my insurance certificate - it's $3M coverage through Liberty Mutual, valid until September 2027.\n\nReady to start immediately!\n\nBest,\nLisa Chen\nTech Elite Solutions\n(678) 555-0198",
+    "has_attachment": true,
+    "attachment_filename": "Insurance_Certificate_LisaChen_LibertyMutual_2027.pdf"
+  }
+}

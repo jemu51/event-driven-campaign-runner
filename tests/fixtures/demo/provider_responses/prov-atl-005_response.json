@@ -1,0 +1,14 @@
+{
+  "provider_id": "prov-atl-005",
+  "provider_name": "Robert Williams",
+  "email": "robert.williams@fieldops.net",
+  "market": "atlanta",
+  "demo_scenario": "partial_equipment_missing_analyzer",
+  "expected_outcome": "REJECTED",
+  "email_response": {
+    "subject": "Re: OPPORTUNITY: Satellite Upgrade technicians needed in Atlanta",
+    "body": "Thanks for the email.\n\nI appreciate you reaching out, but I don't think I'm the right fit for this project.\n\nI primarily do ground-level cable installation work - I have a cable tester and ladder but no bucket truck or spectrum analyzer. I'm also not really interested in traveling much at this point.\n\nIf you have any local ground-level work in the future, feel free to reach out.\n\nThanks anyway,\nRobert Williams",
+    "has_attachment": false,
+    "attachment_filename": null
+  }
+}

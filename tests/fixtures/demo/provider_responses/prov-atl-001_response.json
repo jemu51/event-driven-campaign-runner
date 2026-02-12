@@ -1,0 +1,14 @@
+{
+  "provider_id": "prov-atl-001",
+  "provider_name": "John Smith",
+  "email": "john.smith@techservices.com",
+  "market": "atlanta",
+  "demo_scenario": "complete_equipment_valid_insurance",
+  "expected_outcome": "QUALIFIED",
+  "email_response": {
+    "subject": "Re: OPPORTUNITY: Satellite Upgrade technicians needed in Atlanta",
+    "body": "Hi there!\n\nI'm very interested in this satellite upgrade project in Atlanta!\n\nI wanted to confirm that I have all the equipment you're looking for:\n- Bucket truck (2022 Altec AT40G)\n- Spectrum analyzer (Anritsu MS2720T)\n- Extension ladder (32ft Werner)\n\nI'm definitely willing to travel within the region as needed. I've been doing this type of work for over 8 years now with excellent references.\n\nI've attached my current insurance certificate for your review. It's a $2.5M general liability policy through State Farm, valid through December 2027.\n\nPlease let me know what the next steps are!\n\nBest regards,\nJohn Smith\nTech Services LLC\n(404) 555-0127",
+    "has_attachment": true,
+    "attachment_filename": "Insurance_Certificate_JohnSmith_StateFarm_2027.pdf"
+  }
+}

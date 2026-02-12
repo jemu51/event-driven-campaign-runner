@@ -1,0 +1,10 @@
+# Send Follow-Ups Lambda - Runtime Dependencies
+# Optimized: Only runtime deps needed (no Strands, Jinja2, email-validator, testing tools)
+
+boto3>=1.42.43
+botocore>=1.42.24
+pydantic>=2.12.5
+pydantic-settings>=2.12.0
+structlog>=25.5.0
+python-json-logger>=4.0.0
+python-dateutil>=2.9.0.post0

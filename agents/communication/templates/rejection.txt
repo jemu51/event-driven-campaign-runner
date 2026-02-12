@@ -1,0 +1,24 @@
+Hi {{ provider_name }},
+
+Thank you for your interest in the {{ campaign_type }} opportunity in {{ market }}.
+
+After reviewing your application, we regret to inform you that we're unable to proceed with your candidacy at this time.
+
+{% if reason %}
+**Reason:**
+{{ reason }}
+{% endif %}
+
+**Please Note:**
+This decision is specific to this campaign and doesn't reflect on your qualifications as a professional. Different campaigns have different requirements, and we encourage you to apply for future opportunities that may be a better fit.
+
+**Future Opportunities:**
+We regularly have new campaigns looking for skilled technicians. If you'd like to be considered for future opportunities, no action is needed - we'll keep your profile in our system.
+
+Thank you for your time and interest. We wish you the best in your professional endeavors.
+
+Best regards,
+The Recruitment Team
+
+---
+Questions about this decision? Reply to this email and we'll be happy to discuss.

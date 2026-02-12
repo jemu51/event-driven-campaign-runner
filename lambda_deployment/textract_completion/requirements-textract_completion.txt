@@ -1,0 +1,27 @@
+# Textract Completion Lambda - Runtime Dependencies
+# Optimized: Only runtime deps needed (no Strands, Jinja2, testing tools, agents)
+#
+# This lambda is self-contained and doesn't depend on agents/shared
+# It only needs core AWS SDKs and structured logging
+#
+# Generated: 2026-02-09
+# Python: 3.12+ (AWS Lambda supports 3.12, 3.13, 3.14)
+
+# AWS SDKs
+boto3>=1.42.43              # AWS SDK for Python
+botocore>=1.42.24           # Low-level AWS service library (required by boto3)
+
+# Structured Logging
+structlog>=25.5.0           # Production-grade structured logging
+python-json-logger>=4.0.0   # JSON formatter for structured logs
+
+# Notes:
+# - boto3 includes botocore as a dependency
+# - structlog is used for consistent logging across the system
+# - This lambda does NOT use:
+#   * Strands AI SDK (not needed for document processing)
+#   * Jinja2 (not rendering templates)
+#   * pydantic (not validating external input shapes)
+#   * email-validator (not parsing emails)
+#   * agents/shared modules (standalone lambda)
+

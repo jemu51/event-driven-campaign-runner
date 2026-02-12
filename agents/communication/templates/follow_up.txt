@@ -1,0 +1,22 @@
+Hi {{ provider_name }},
+
+We reached out {{ days_since_contact }} days ago about a {{ campaign_type }} opportunity in {{ market }}, and wanted to follow up in case you missed our message.
+
+We're still actively looking for qualified technicians to join our network for this campaign.
+
+**Quick Recap:**
+{{ original_requirements }}
+
+**Why We're Following Up:**
+This opportunity is filling up quickly, and we'd hate for you to miss out. If you're interested, please respond as soon as possible.
+
+**All We Need:**
+Just a quick reply letting us know if you're interested. If you have any questions about the opportunity, we're happy to answer them.
+
+Looking forward to hearing from you!
+
+Best regards,
+The Recruitment Team
+
+---
+Not interested? No problem - just let us know and we'll update our records.

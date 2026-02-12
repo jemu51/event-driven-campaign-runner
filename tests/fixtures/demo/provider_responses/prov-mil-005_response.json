@@ -1,0 +1,14 @@
+{
+  "provider_id": "prov-mil-005",
+  "provider_name": "Brian Thompson",
+  "email": "brian.thompson@northernservices.com",
+  "market": "milwaukee",
+  "demo_scenario": "irrelevant_response",
+  "expected_outcome": "REJECTED",
+  "email_response": {
+    "subject": "Re: OPPORTUNITY: Satellite Upgrade technicians needed in Milwaukee",
+    "body": "Hi,\n\nThanks for the email, but I think there might be some confusion.\n\nI primarily do residential electrical and handyman work - basic repairs, outlet installations, that kind of thing. I have a ladder and some basic testing equipment but nothing for satellite or telecommunications work.\n\nI'm also not really looking to travel for work at this point in my career.\n\nIf you ever have any local electrical work or general contracting needs, feel free to reach out!\n\nBest,\nBrian Thompson\nNorthern Home Services",
+    "has_attachment": false,
+    "attachment_filename": null
+  }
+}

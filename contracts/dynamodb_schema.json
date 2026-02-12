@@ -1,0 +1,314 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RecruitmentSessions DynamoDB Schema",
+  "description": "Complete table definition for provider state persistence",
+  "version": "1.0.0",
+
+  "table": {
+    "tableName": "RecruitmentSessions",
+    "billingMode": "PAY_PER_REQUEST",
+
+    "keySchema": {
+      "partitionKey": {
+        "attributeName": "PK",
+        "attributeType": "S",
+        "pattern": "^SESSION#[a-zA-Z0-9-]+$",
+        "description": "Campaign partition key: SESSION#<campaign_id>"
+      },
+      "sortKey": {
+        "attributeName": "SK",
+        "attributeType": "S",
+        "pattern": "^PROVIDER#[a-zA-Z0-9-]+$",
+        "description": "Provider sort key: PROVIDER#<provider_id>"
+      }
+    },
+
+    "globalSecondaryIndexes": [
+      {
+        "indexName": "GSI1",
+        "description": "Dormant session queries by status and expected event",
+        "keySchema": {
+          "partitionKey": {
+            "attributeName": "GSI1PK",
+            "attributeType": "S",
+            "pattern": "^[A-Z_]+#[A-Za-z]+$",
+            "description": "Composite key: <status>#<expected_next_event>"
+          },
+          "sortKey": {
+            "attributeName": "last_contacted_at",
+            "attributeType": "N",
+            "description": "Unix epoch timestamp for range queries"
+          }
+        },
+        "projection": {
+          "projectionType": "ALL"
+        }
+      }
+    ]
+  },
+
+  "attributes": {
+    "required": [
+      {
+        "name": "PK",
+        "type": "S",
+        "description": "Partition key: SESSION#<campaign_id>"
+      },
+      {
+        "name": "SK",
+        "type": "S",
+        "description": "Sort key: PROVIDER#<provider_id>"
+      },
+      {
+        "name": "status",
+        "type": "S",
+        "enum": [
+          "INVITED",
+          "WAITING_RESPONSE",
+          "WAITING_DOCUMENT",
+          "DOCUMENT_PROCESSING",
+          "UNDER_REVIEW",
+          "QUALIFIED",
+          "REJECTED",
+          "ESCALATED"
+        ],
+        "description": "Current provider state from state_machine.json"
+      },
+      {
+        "name": "expected_next_event",
+        "type": "S",
+        "description": "Event type that will wake the agent next"
+      },
+      {
+        "name": "last_contacted_at",
+        "type": "N",
+        "description": "Unix epoch timestamp of last contact"
+      },
+      {
+        "name": "GSI1PK",
+        "type": "S",
+        "description": "GSI1 partition key: <status>#<expected_next_event>"
+      },
+      {
+        "name": "provider_email",
+        "type": "S",
+        "description": "Provider's email address"
+      },
+      {
+        "name": "provider_market",
+        "type": "S",
+        "description": "Market assignment (e.g., atlanta, chicago, milwaukee)"
+      }
+    ],
+
+    "optional": [
+      {
+        "name": "email_thread_id",
+        "type": "S",
+        "nullable": true,
+        "description": "SES message/thread tracking ID"
+      },
+      {
+        "name": "equipment_confirmed",
+        "type": "L",
+        "itemType": "S",
+        "nullable": true,
+        "description": "Array of confirmed equipment (e.g., bucket_truck, spectrum_analyzer)"
+      },
+      {
+        "name": "equipment_missing",
+        "type": "L",
+        "itemType": "S",
+        "nullable": true,
+        "description": "Array of missing required equipment"
+      },
+      {
+        "name": "travel_confirmed",
+        "type": "BOOL",
+        "nullable": true,
+        "description": "Whether provider confirmed travel willingness"
+      },
+      {
+        "name": "documents_uploaded",
+        "type": "L",
+        "itemType": "S",
+        "nullable": true,
+        "description": "Array of uploaded document types"
+      },
+      {
+        "name": "documents_pending",
+        "type": "L",
+        "itemType": "S",
+        "nullable": true,
+        "description": "Array of still-needed document types"
+      },
+      {
+        "name": "screening_notes",
+        "type": "S",
+        "nullable": true,
+        "description": "Human-readable screening summary"
+      },
+      {
+        "name": "artifacts",
+        "type": "M",
+        "nullable": true,
+        "description": "Map of filename -> S3 path for uploaded documents"
+      },
+      {
+        "name": "extracted_data",
+        "type": "M",
+        "nullable": true,
+        "description": "OCR/Textract extracted fields from documents"
+      },
+      {
+        "name": "certifications",
+        "type": "L",
+        "itemType": "S",
+        "nullable": true,
+        "description": "Provider's certifications"
+      },
+      {
+        "name": "created_at",
+        "type": "N",
+        "nullable": true,
+        "description": "Unix epoch timestamp of record creation"
+      },
+      {
+        "name": "updated_at",
+        "type": "N",
+        "nullable": true,
+        "description": "Unix epoch timestamp of last update"
+      },
+      {
+        "name": "version",
+        "type": "N",
+        "nullable": true,
+        "description": "Optimistic locking version number"
+      }
+    ]
+  },
+
+  "accessPatterns": {
+    "getProviderState": {
+      "description": "Get single provider state for a campaign",
+      "key": {
+        "PK": "SESSION#<campaign_id>",
+        "SK": "PROVIDER#<provider_id>"
+      },
+      "operation": "GetItem"
+    },
+    "listCampaignProviders": {
+      "description": "List all providers for a campaign",
+      "key": {
+        "PK": "SESSION#<campaign_id>",
+        "SK": "begins_with(PROVIDER#)"
+      },
+      "operation": "Query"
+    },
+    "findDormantSessions": {
+      "description": "Find providers awaiting response past threshold",
+      "index": "GSI1",
+      "key": {
+        "GSI1PK": "<status>#<expected_next_event>",
+        "last_contacted_at": "< threshold"
+      },
+      "operation": "Query"
+    },
+    "getEmailThread": {
+      "description": "Get all messages in an email thread",
+      "key": {
+        "PK": "THREAD#<campaign_id>#<market_id>#<provider_id>",
+        "SK": "begins_with(MSG#)"
+      },
+      "operation": "Query"
+    },
+    "getLatestThreadMessages": {
+      "description": "Get most recent N messages from a thread",
+      "key": {
+        "PK": "THREAD#<campaign_id>#<market_id>#<provider_id>",
+        "SK": "begins_with(MSG#)"
+      },
+      "operation": "Query",
+      "scanIndexForward": false,
+      "limit": "N"
+    }
+  },
+
+  "emailThreadSchema": {
+    "description": "Schema for email conversation threading using same table",
+    "keyPattern": {
+      "PK": "THREAD#<campaign_id>#<market_id>#<provider_id>",
+      "SK": "MSG#<sequence_number (zero-padded 5 digits)>"
+    },
+    "attributes": {
+      "thread_id": {
+        "type": "S",
+        "description": "Composite thread ID: campaign_id#market_id#provider_id"
+      },
+      "sequence_number": {
+        "type": "N",
+        "description": "1-based sequence number within thread"
+      },
+      "direction": {
+        "type": "S",
+        "enum": ["OUTBOUND", "INBOUND"],
+        "description": "Message direction (system to provider or vice versa)"
+      },
+      "timestamp": {
+        "type": "N",
+        "description": "Unix epoch timestamp when message was sent/received"
+      },
+      "subject": {
+        "type": "S",
+        "description": "Email subject line"
+      },
+      "body_text": {
+        "type": "S",
+        "description": "Plain text email body"
+      },
+      "body_html": {
+        "type": "S",
+        "nullable": true,
+        "description": "HTML email body if available"
+      },
+      "message_id": {
+        "type": "S",
+        "description": "SES/email message ID for threading"
+      },
+      "in_reply_to": {
+        "type": "S",
+        "nullable": true,
+        "description": "Message ID this is a reply to"
+      },
+      "email_from": {
+        "type": "S",
+        "description": "Sender email address"
+      },
+      "email_to": {
+        "type": "S",
+        "description": "Recipient email address"
+      },
+      "message_type": {
+        "type": "S",
+        "description": "Type of message (initial_outreach, follow_up, provider_response, etc.)"
+      },
+      "attachments": {
+        "type": "L",
+        "itemType": "M",
+        "description": "List of attachment metadata objects"
+      },
+      "metadata": {
+        "type": "M",
+        "description": "Additional metadata (llm_generated, template_used, etc.)"
+      }
+    }
+  },
+
+  "notes": [
+    "PK/SK pattern enables efficient campaign-scoped queries",
+    "GSI1 enables dormant session detection without table scans",
+    "Timestamps are Unix epoch integers for numeric range queries",
+    "Use conditional writes with version for optimistic locking",
+    "TTL not enabled - campaigns may span weeks"
+  ]
+}

@@ -1,0 +1,19 @@
+Hi {{ provider_name }},
+
+Thank you for your response regarding the {{ campaign_type }} opportunity in {{ market }}. We have a quick question before we can proceed.
+
+**Question:**
+{{ question }}
+
+**Why We're Asking:**
+We want to make sure we match you with the right opportunities and that the job requirements align with your capabilities.
+
+Please reply with the requested information at your earliest convenience.
+
+Thank you for your patience!
+
+Best regards,
+The Recruitment Team
+
+---
+Reply directly to this email with your response.

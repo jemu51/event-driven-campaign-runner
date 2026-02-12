@@ -1,0 +1,14 @@
+{
+  "provider_id": "prov-atl-003",
+  "provider_name": "Mike Davis",
+  "email": "mike.davis@networkpros.com",
+  "market": "atlanta",
+  "demo_scenario": "equipment_no_insurance",
+  "expected_outcome": "WAITING_DOCUMENT",
+  "email_response": {
+    "subject": "Re: OPPORTUNITY: Satellite Upgrade technicians needed in Atlanta",
+    "body": "Hi,\n\nThis sounds like a great opportunity! I'm definitely interested.\n\nI've got all the equipment you need:\n- Bucket truck - Ford F-750 with 50ft reach\n- Spectrum analyzer - Rohde & Schwarz FSH8\n- Cable tester - Fluke DTX-1800\n\nI'm available to travel throughout the Atlanta metro area and beyond. I've been in the satellite installation business for 5 years and have done numerous upgrade projects.\n\nI'm ready to get started whenever you need me. Just let me know the schedule and I'll make it work.\n\nMike Davis\nNetwork Pros Inc.\n(770) 555-0342",
+    "has_attachment": false,
+    "attachment_filename": null
+  }
+}

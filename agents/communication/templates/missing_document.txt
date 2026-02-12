@@ -1,0 +1,33 @@
+Hi {{ provider_name }},
+
+Thank you for your interest in the {{ campaign_type }} opportunity in {{ market }}. We're excited to move forward with your application!
+
+**Document Required:**
+To complete your qualification, we still need the following documentation:
+
+{% for doc in missing_documents %}
+- {{ doc | replace('_', ' ') | title }}
+{% endfor %}
+
+**Insurance Requirements:**
+{% if insurance_requirement %}
+- Your insurance must show minimum coverage of {{ insurance_requirement }}
+- The policy must be current and not expired
+{% else %}
+- A current, valid insurance certificate
+{% endif %}
+
+**How to Submit:**
+Simply reply to this email with the required document(s) attached. We accept PDF, JPG, or PNG formats. Please keep attachments under 30MB.
+
+{% if deadline %}
+**Important:** Please submit by {{ deadline }} to secure your spot.
+{% endif %}
+
+If you have any questions about the documentation requirements, don't hesitate to ask.
+
+Best regards,
+The Recruitment Team
+
+---
+Having trouble? Reply to this email and we'll help you out.

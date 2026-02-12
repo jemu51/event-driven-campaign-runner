@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Provider State Machine",
+  "description": "Allowed states and valid transitions for provider recruitment flow",
+  "version": "1.0.0",
+
+  "states": {
+    "INVITED": {
+      "description": "Provider invited to campaign, initial outreach pending",
+      "terminal": false
+    },
+    "WAITING_RESPONSE": {
+      "description": "Outreach sent, awaiting provider reply",
+      "terminal": false
+    },
+    "WAITING_DOCUMENT": {
+      "description": "Response received, required document(s) not yet submitted",
+      "terminal": false
+    },
+    "DOCUMENT_PROCESSING": {
+      "description": "Document uploaded, Textract OCR in progress",
+      "terminal": false
+    },
+    "UNDER_REVIEW": {
+      "description": "Automated screening complete, manual review needed",
+      "terminal": false
+    },
+    "QUALIFIED": {
+      "description": "Provider meets all requirements, approved for campaign",
+      "terminal": true
+    },
+    "REJECTED": {
+      "description": "Provider does not meet requirements or declined",
+      "terminal": true
+    },
+    "ESCALATED": {
+      "description": "Edge case requiring human intervention",
+      "terminal": true
+    }
+  },
+
+  "transitions": {
+    "INVITED": {
+      "allowedNext": ["WAITING_RESPONSE"],
+      "description": "After initial outreach email sent"
+    },
+    "WAITING_RESPONSE": {
+      "allowedNext": ["WAITING_DOCUMENT", "DOCUMENT_PROCESSING", "QUALIFIED", "REJECTED", "UNDER_REVIEW"],
+      "description": "After provider responds (with or without documents)"
+    },
+    "WAITING_DOCUMENT": {
+      "allowedNext": ["DOCUMENT_PROCESSING", "REJECTED", "ESCALATED"],
+      "description": "After document uploaded or follow-up exhausted"
+    },
+    "DOCUMENT_PROCESSING": {
+      "allowedNext": ["UNDER_REVIEW", "WAITING_DOCUMENT", "QUALIFIED", "REJECTED"],
+      "description": "After Textract completes OCR extraction"
+    },
+    "UNDER_REVIEW": {
+      "allowedNext": ["QUALIFIED", "REJECTED", "ESCALATED"],
+      "description": "After manual or additional automated review"
+    },
+    "QUALIFIED": {
+      "allowedNext": [],
+      "description": "Terminal state - no further transitions"
+    },
+    "REJECTED": {
+      "allowedNext": [],
+      "description": "Terminal state - no further transitions"
+    },
+    "ESCALATED": {
+      "allowedNext": ["QUALIFIED", "REJECTED"],
+      "description": "Can be resolved by human to final state"
+    }
+  },
+
+  "expectedEvents": {
+    "INVITED": "SendMessageRequested",
+    "WAITING_RESPONSE": "ProviderResponseReceived",
+    "WAITING_DOCUMENT": "ProviderResponseReceived",
+    "DOCUMENT_PROCESSING": "DocumentProcessed",
+    "UNDER_REVIEW": "ScreeningCompleted",
+    "QUALIFIED": null,
+    "REJECTED": null,
+    "ESCALATED": null
+  },
+
+  "notes": [
+    "Agents must not invent states - only use values defined here",
+    "State is stored in DynamoDB as the source of truth",
+    "Terminal states have no outgoing transitions",
+    "ESCALATED can transition to terminal states after human review",
+    "expectedEvents maps state to the event that triggers next action"
+  ]
+}

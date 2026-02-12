@@ -1,0 +1,14 @@
+{
+  "provider_id": "prov-chi-004",
+  "provider_name": "Amanda Brown",
+  "email": "amanda.brown@techconnect.net",
+  "market": "chicago",
+  "demo_scenario": "equipment_no_insurance",
+  "expected_outcome": "WAITING_DOCUMENT",
+  "email_response": {
+    "subject": "Re: OPPORTUNITY: Satellite Upgrade technicians needed in Chicago",
+    "body": "Good afternoon!\n\nI'm excited about this opportunity and would love to be part of the satellite upgrade project.\n\nI have all the equipment needed:\n- Bucket truck: Ford F-650 with Dur-A-Lift aerial platform\n- Spectrum analyzer: Rohde & Schwarz FSH4\n\nI'm OSHA-10 and OSHA-30 certified with a perfect safety record across 112 completed jobs.\n\nI can travel anywhere in the Chicago metro area and am very flexible with scheduling.\n\nWhen would you like to get started? I'm available immediately.\n\nAmanda Brown\nTech Connect Solutions\n(630) 555-0789",
+    "has_attachment": false,
+    "attachment_filename": null
+  }
+}

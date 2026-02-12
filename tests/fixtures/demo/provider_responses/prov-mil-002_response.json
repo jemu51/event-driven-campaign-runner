@@ -1,0 +1,14 @@
+{
+  "provider_id": "prov-mil-002",
+  "provider_name": "Emily White",
+  "email": "emily.white@lakefrontservices.net",
+  "market": "milwaukee",
+  "demo_scenario": "equipment_no_insurance",
+  "expected_outcome": "WAITING_DOCUMENT",
+  "email_response": {
+    "subject": "Re: OPPORTUNITY: Satellite Upgrade technicians needed in Milwaukee",
+    "body": "Hi there!\n\nThis looks like a great project. I'd love to be considered.\n\nI have a bucket truck (2020 Ford F-550 with Versalift aerial) and a fiber splicer for any related work. I'm BICSI certified and OSHA-10 trained.\n\nI'm based in Milwaukee and willing to travel throughout Wisconsin.\n\nWhen would the project start? I have availability next week.\n\nThanks!\nEmily White\nLakefront Services\n(262) 555-0654",
+    "has_attachment": false,
+    "attachment_filename": null
+  }
+}

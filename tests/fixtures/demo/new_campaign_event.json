@@ -1,0 +1,63 @@
+{
+  "$schema": "../../../contracts/events.json",
+  "description": "Sample NewCampaignRequested event for Satellite Upgrade demo",
+  "event_type": "NewCampaignRequested",
+  "source": "recruitment.api",
+  "eventbridge_format": {
+    "Source": "recruitment.api",
+    "DetailType": "NewCampaignRequested",
+    "EventBusName": "recruitment-events-dev",
+    "Detail": {
+      "campaign_id": "satellite-upgrade-2026-02",
+      "buyer_id": "buyer-skynet-corp-001",
+      "requirements": {
+        "type": "satellite_upgrade",
+        "markets": ["atlanta", "chicago", "milwaukee"],
+        "providers_per_market": 5,
+        "equipment": {
+          "required": ["bucket_truck", "spectrum_analyzer"],
+          "optional": ["fiber_splicer", "otdr"]
+        },
+        "documents": {
+          "required": ["insurance_certificate"],
+          "insurance_min_coverage": 2000000
+        },
+        "certifications": {
+          "required": [],
+          "preferred": ["comptia_network_plus", "bicsi", "fcc_license"]
+        },
+        "travel_required": true
+      },
+      "trace_context": {
+        "trace_id": "0af7651916cd43dd8448eb211c80319c",
+        "span_id": "b7ad6b7169203331"
+      }
+    }
+  },
+  "raw_event": {
+    "campaign_id": "satellite-upgrade-2026-02",
+    "buyer_id": "buyer-skynet-corp-001",
+    "requirements": {
+      "type": "satellite_upgrade",
+      "markets": ["atlanta", "chicago", "milwaukee"],
+      "providers_per_market": 5,
+      "equipment": {
+        "required": ["bucket_truck", "spectrum_analyzer"],
+        "optional": ["fiber_splicer", "otdr"]
+      },
+      "documents": {
+        "required": ["insurance_certificate"],
+        "insurance_min_coverage": 2000000
+      },
+      "certifications": {
+        "required": [],
+        "preferred": ["comptia_network_plus", "bicsi", "fcc_license"]
+      },
+      "travel_required": true
+    },
+    "trace_context": {
+      "trace_id": "0af7651916cd43dd8448eb211c80319c",
+      "span_id": "b7ad6b7169203331"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "provider_id": "prov-atl-002",
+  "provider_name": "Sarah Johnson",
+  "email": "sarah.johnson@fieldtech.net",
+  "market": "atlanta",
+  "demo_scenario": "partial_equipment_missing_analyzer",
+  "expected_outcome": "REJECTED",
+  "email_response": {
+    "subject": "Re: OPPORTUNITY: Satellite Upgrade technicians needed in Atlanta",
+    "body": "Hello,\n\nThank you for reaching out about the satellite upgrade project.\n\nI do have a bucket truck available (2021 Ford F-550 with Altec boom) and I'm experienced with satellite installations.\n\nHowever, I should be upfront - I don't currently have a spectrum analyzer. I've been meaning to invest in one but haven't made the purchase yet. I do have fiber splicing equipment and an OTDR if those would be useful.\n\nWould this be a deal-breaker for the project, or is there any flexibility on the equipment requirements?\n\nI can provide my insurance certificate if there's a chance to move forward.\n\nThanks,\nSarah Johnson\nField Tech Services",
+    "has_attachment": false,
+    "attachment_filename": null
+  }
+}

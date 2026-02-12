@@ -1,0 +1,209 @@
+{
+  "$schema": "../../../contracts/document_types.json",
+  "description": "Mock insurance documents for demo scenario - Textract extraction simulation",
+  "documents": [
+    {
+      "filename": "Insurance_Certificate_JohnSmith_StateFarm_2027.pdf",
+      "provider_id": "prov-atl-001",
+      "document_type": "insurance_certificate",
+      "validation_status": "valid",
+      "mock_textract_output": {
+        "document_id": "doc-atl001-ins-001",
+        "job_id": "textract-job-atl001-001",
+        "extraction_confidence": 0.95,
+        "extracted_fields": {
+          "policy_holder": "John Smith",
+          "business_name": "Tech Services LLC",
+          "insurance_company": "State Farm Insurance",
+          "policy_number": "45-GL-2827493",
+          "policy_type": "General Liability",
+          "coverage_amount_usd": 2500000,
+          "effective_date": "2026-01-15",
+          "expiry_date": "2027-12-31",
+          "additional_insured": "Available upon request"
+        }
+      }
+    },
+    {
+      "filename": "Insurance_Certificate_LisaChen_LibertyMutual_2027.pdf",
+      "provider_id": "prov-atl-004",
+      "document_type": "insurance_certificate",
+      "validation_status": "valid",
+      "mock_textract_output": {
+        "document_id": "doc-atl004-ins-001",
+        "job_id": "textract-job-atl004-001",
+        "extraction_confidence": 0.93,
+        "extracted_fields": {
+          "policy_holder": "Lisa Chen",
+          "business_name": "Tech Elite Solutions",
+          "insurance_company": "Liberty Mutual Insurance",
+          "policy_number": "LM-GL-8834521",
+          "policy_type": "General Liability",
+          "coverage_amount_usd": 3000000,
+          "effective_date": "2025-09-01",
+          "expiry_date": "2027-09-01",
+          "additional_insured": "Included"
+        }
+      }
+    },
+    {
+      "filename": "Insurance_Certificate_DavidMartinez_Travelers_2027.pdf",
+      "provider_id": "prov-chi-001",
+      "document_type": "insurance_certificate",
+      "validation_status": "valid",
+      "mock_textract_output": {
+        "document_id": "doc-chi001-ins-001",
+        "job_id": "textract-job-chi001-001",
+        "extraction_confidence": 0.96,
+        "extracted_fields": {
+          "policy_holder": "David Martinez",
+          "business_name": "Windy City Tech Services",
+          "insurance_company": "Travelers Insurance",
+          "policy_number": "TRV-2847193-GL",
+          "policy_type": "General Liability",
+          "coverage_amount_usd": 2500000,
+          "effective_date": "2025-03-15",
+          "expiry_date": "2027-03-15",
+          "additional_insured": "Available"
+        }
+      }
+    },
+    {
+      "filename": "Insurance_Certificate_JenniferLee_Expired_2025.pdf",
+      "provider_id": "prov-chi-002",
+      "document_type": "insurance_certificate",
+      "validation_status": "expired",
+      "mock_textract_output": {
+        "document_id": "doc-chi002-ins-001",
+        "job_id": "textract-job-chi002-001",
+        "extraction_confidence": 0.91,
+        "extracted_fields": {
+          "policy_holder": "Jennifer Lee",
+          "business_name": "Lakeshore Services LLC",
+          "insurance_company": "Progressive Insurance",
+          "policy_number": "PRG-GL-5592847",
+          "policy_type": "General Liability",
+          "coverage_amount_usd": 2000000,
+          "effective_date": "2024-06-01",
+          "expiry_date": "2025-06-01",
+          "additional_insured": "N/A"
+        },
+        "validation_failure_reason": "Insurance policy expired on 2025-06-01"
+      }
+    },
+    {
+      "filename": "Insurance_Certificate_ChrisTaylor_Progressive_2027.pdf",
+      "provider_id": "prov-chi-005",
+      "document_type": "insurance_certificate",
+      "validation_status": "valid",
+      "mock_textract_output": {
+        "document_id": "doc-chi005-ins-001",
+        "job_id": "textract-job-chi005-001",
+        "extraction_confidence": 0.94,
+        "extracted_fields": {
+          "policy_holder": "Chris Taylor",
+          "business_name": "Signal Works Inc",
+          "insurance_company": "Progressive Insurance",
+          "policy_number": "PRG-GL-7728491",
+          "policy_type": "General Liability",
+          "coverage_amount_usd": 2000000,
+          "effective_date": "2025-11-01",
+          "expiry_date": "2027-11-01",
+          "additional_insured": "Available"
+        }
+      }
+    },
+    {
+      "filename": "Insurance_Certificate_TomAnderson_Nationwide_2027.pdf",
+      "provider_id": "prov-mil-001",
+      "document_type": "insurance_certificate",
+      "validation_status": "valid",
+      "mock_textract_output": {
+        "document_id": "doc-mil001-ins-001",
+        "job_id": "textract-job-mil001-001",
+        "extraction_confidence": 0.92,
+        "extracted_fields": {
+          "policy_holder": "Tom Anderson",
+          "business_name": "Brew City Tech LLC",
+          "insurance_company": "Nationwide Insurance",
+          "policy_number": "NW-GL-4428173",
+          "policy_type": "General Liability",
+          "coverage_amount_usd": 2500000,
+          "effective_date": "2025-08-15",
+          "expiry_date": "2027-08-15",
+          "additional_insured": "Included"
+        }
+      }
+    },
+    {
+      "filename": "Insurance_Certificate_KevinMurphy_Expired_2025.pdf",
+      "provider_id": "prov-mil-003",
+      "document_type": "insurance_certificate",
+      "validation_status": "expired",
+      "mock_textract_output": {
+        "document_id": "doc-mil003-ins-001",
+        "job_id": "textract-job-mil003-001",
+        "extraction_confidence": 0.89,
+        "extracted_fields": {
+          "policy_holder": "Kevin Murphy",
+          "business_name": "Midwest Solutions LLC",
+          "insurance_company": "Allstate Insurance",
+          "policy_number": "ALL-GL-2938471",
+          "policy_type": "General Liability",
+          "coverage_amount_usd": 2000000,
+          "effective_date": "2024-03-01",
+          "expiry_date": "2025-03-01",
+          "additional_insured": "N/A"
+        },
+        "validation_failure_reason": "Insurance policy expired on 2025-03-01"
+      }
+    }
+  ],
+  "additional_test_documents": [
+    {
+      "filename": "insurance_1M_coverage.pdf",
+      "provider_id": "sample-low-coverage",
+      "document_type": "insurance_certificate",
+      "validation_status": "insufficient_coverage",
+      "mock_textract_output": {
+        "document_id": "doc-sample-lowcov-001",
+        "job_id": "textract-job-lowcov-001",
+        "extraction_confidence": 0.90,
+        "extracted_fields": {
+          "policy_holder": "Sample Provider",
+          "business_name": "Small Time Services",
+          "insurance_company": "Budget Insurance",
+          "policy_number": "BUD-GL-1234567",
+          "policy_type": "General Liability",
+          "coverage_amount_usd": 1000000,
+          "effective_date": "2026-01-01",
+          "expiry_date": "2027-01-01",
+          "additional_insured": "N/A"
+        },
+        "validation_failure_reason": "Coverage amount $1,000,000 is below minimum required $2,000,000"
+      }
+    },
+    {
+      "filename": "insurance_acme_valid_2027.pdf",
+      "provider_id": "sample-valid",
+      "document_type": "insurance_certificate",
+      "validation_status": "valid",
+      "mock_textract_output": {
+        "document_id": "doc-sample-valid-001",
+        "job_id": "textract-job-valid-001",
+        "extraction_confidence": 0.97,
+        "extracted_fields": {
+          "policy_holder": "ACME Technician",
+          "business_name": "ACME Tech Services",
+          "insurance_company": "ACME Insurance Co",
+          "policy_number": "ACME-GL-9999999",
+          "policy_type": "General Liability",
+          "coverage_amount_usd": 5000000,
+          "effective_date": "2026-01-01",
+          "expiry_date": "2027-12-31",
+          "additional_insured": "Included"
+        }
+      }
+    }
+  ]
+}

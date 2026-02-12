@@ -1,0 +1,314 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Campaign Requirements Schema",
+  "description": "Demo scenario requirements: equipment, certifications, insurance",
+  "version": "1.0.0",
+
+  "equipment": {
+    "description": "Valid equipment types for screening",
+    "types": {
+      "bucket_truck": {
+        "id": "bucket_truck",
+        "displayName": "Bucket Truck",
+        "description": "Aerial work platform vehicle with extendable boom",
+        "keywords": [
+          "bucket truck",
+          "bucket",
+          "aerial lift",
+          "boom truck",
+          "cherry picker",
+          "man lift",
+          "aerial platform"
+        ],
+        "category": "vehicle"
+      },
+      "spectrum_analyzer": {
+        "id": "spectrum_analyzer",
+        "displayName": "Spectrum Analyzer",
+        "description": "RF signal measurement and analysis device",
+        "keywords": [
+          "spectrum analyzer",
+          "spectrum",
+          "rf analyzer",
+          "signal analyzer",
+          "frequency analyzer"
+        ],
+        "category": "test_equipment"
+      },
+      "fiber_splicer": {
+        "id": "fiber_splicer",
+        "displayName": "Fiber Splicer",
+        "description": "Fusion splicer for fiber optic cable joining",
+        "keywords": [
+          "fiber splicer",
+          "fusion splicer",
+          "splicer",
+          "fiber optic splicer",
+          "splicing machine"
+        ],
+        "category": "test_equipment"
+      },
+      "otdr": {
+        "id": "otdr",
+        "displayName": "OTDR",
+        "description": "Optical Time Domain Reflectometer for fiber testing",
+        "keywords": [
+          "otdr",
+          "optical time domain reflectometer",
+          "fiber tester",
+          "reflectometer"
+        ],
+        "category": "test_equipment"
+      },
+      "cable_tester": {
+        "id": "cable_tester",
+        "displayName": "Cable Tester",
+        "description": "Network cable certification and testing device",
+        "keywords": [
+          "cable tester",
+          "network tester",
+          "fluke",
+          "cable certifier",
+          "lan tester"
+        ],
+        "category": "test_equipment"
+      },
+      "ladder": {
+        "id": "ladder",
+        "displayName": "Extension Ladder",
+        "description": "Extension ladder for elevated work access",
+        "keywords": [
+          "ladder",
+          "extension ladder",
+          "24ft ladder",
+          "28ft ladder",
+          "32ft ladder"
+        ],
+        "category": "equipment"
+      }
+    },
+    "categories": {
+      "vehicle": "Transportation/lifting equipment",
+      "test_equipment": "Measurement and testing devices",
+      "equipment": "General tools and equipment"
+    }
+  },
+
+  "certifications": {
+    "description": "Valid certification types for screening",
+    "types": {
+      "comptia_network_plus": {
+        "id": "comptia_network_plus",
+        "displayName": "CompTIA Network+",
+        "description": "CompTIA networking fundamentals certification",
+        "keywords": [
+          "comptia network+",
+          "comptia network plus",
+          "network+",
+          "n10"
+        ],
+        "issuer": "CompTIA",
+        "expires": true
+      },
+      "bicsi": {
+        "id": "bicsi",
+        "displayName": "BICSI Certification",
+        "description": "Building Industry Consulting Service International",
+        "keywords": [
+          "bicsi",
+          "rcdd",
+          "tech",
+          "installer",
+          "bicsi installer"
+        ],
+        "issuer": "BICSI",
+        "expires": true
+      },
+      "fcc_license": {
+        "id": "fcc_license",
+        "displayName": "FCC License",
+        "description": "Federal Communications Commission operator license",
+        "keywords": [
+          "fcc",
+          "fcc license",
+          "grol",
+          "general radiotelephone",
+          "radio operator"
+        ],
+        "issuer": "FCC",
+        "expires": true
+      },
+      "osha_10": {
+        "id": "osha_10",
+        "displayName": "OSHA 10",
+        "description": "OSHA 10-hour safety training certification",
+        "keywords": [
+          "osha 10",
+          "osha10",
+          "osha-10",
+          "10 hour osha"
+        ],
+        "issuer": "OSHA",
+        "expires": false
+      },
+      "osha_30": {
+        "id": "osha_30",
+        "displayName": "OSHA 30",
+        "description": "OSHA 30-hour safety training certification",
+        "keywords": [
+          "osha 30",
+          "osha30",
+          "osha-30",
+          "30 hour osha"
+        ],
+        "issuer": "OSHA",
+        "expires": false
+      }
+    }
+  },
+
+  "insurance": {
+    "description": "Insurance requirements and validation rules",
+    "requirements": {
+      "general_liability": {
+        "id": "general_liability",
+        "displayName": "General Liability Insurance",
+        "minimumCoverage": 2000000,
+        "currencyUnit": "USD",
+        "documentType": "insurance_certificate",
+        "validationRules": {
+          "coverage_amount": {
+            "operator": ">=",
+            "value": 2000000,
+            "errorMessage": "Coverage amount must be at least $2,000,000"
+          },
+          "expiry_date": {
+            "operator": "date_after_today",
+            "bufferDays": 30,
+            "errorMessage": "Insurance must be valid for at least 30 more days"
+          }
+        }
+      }
+    },
+    "defaults": {
+      "minimumCoverage": 2000000,
+      "requiredForQualification": true
+    }
+  },
+
+  "travel": {
+    "description": "Travel willingness detection",
+    "keywords": {
+      "positive": [
+        "can travel",
+        "willing to travel",
+        "will travel",
+        "travel is ok",
+        "travel is fine",
+        "no problem with travel",
+        "available to travel",
+        "can relocate",
+        "mobile",
+        "flexible location"
+      ],
+      "negative": [
+        "cannot travel",
+        "can't travel",
+        "not willing to travel",
+        "no travel",
+        "local only",
+        "not mobile",
+        "cannot relocate"
+      ]
+    }
+  },
+
+  "markets": {
+    "description": "Valid geographic markets for demo scenario",
+    "types": {
+      "atlanta": {
+        "id": "atlanta",
+        "displayName": "Atlanta",
+        "region": "southeast",
+        "state": "GA"
+      },
+      "chicago": {
+        "id": "chicago",
+        "displayName": "Chicago",
+        "region": "midwest",
+        "state": "IL"
+      },
+      "milwaukee": {
+        "id": "milwaukee",
+        "displayName": "Milwaukee",
+        "region": "midwest",
+        "state": "WI"
+      }
+    }
+  },
+
+  "campaignTypes": {
+    "satellite_upgrade": {
+      "id": "satellite_upgrade",
+      "displayName": "Satellite Upgrade",
+      "description": "Satellite dish installation and upgrade campaign",
+      "defaultRequirements": {
+        "equipment": {
+          "required": ["bucket_truck", "spectrum_analyzer"],
+          "optional": ["fiber_splicer"]
+        },
+        "documents": {
+          "required": ["insurance_certificate"]
+        },
+        "certifications": {
+          "preferred": ["comptia_network_plus", "bicsi", "fcc_license"]
+        },
+        "insurance_min_coverage": 2000000,
+        "travel_required": true,
+        "providers_per_market": 5
+      }
+    }
+  },
+
+  "screeningLogic": {
+    "description": "Decision rules for provider screening",
+    "qualificationCriteria": {
+      "QUALIFIED": {
+        "requirements": [
+          "All required equipment confirmed",
+          "Valid insurance certificate uploaded",
+          "Insurance coverage >= minimum",
+          "Insurance not expired",
+          "Travel confirmed if required"
+        ]
+      },
+      "WAITING_DOCUMENT": {
+        "trigger": [
+          "Equipment confirmed but missing required documents"
+        ]
+      },
+      "REJECTED": {
+        "trigger": [
+          "Missing required equipment with no indication of acquiring",
+          "Expired insurance with no updated document",
+          "Coverage below minimum with no indication of upgrading",
+          "Explicitly declined opportunity"
+        ]
+      },
+      "UNDER_REVIEW": {
+        "trigger": [
+          "Ambiguous response requiring human review",
+          "Partial equipment match needing clarification",
+          "Document extraction confidence below threshold"
+        ]
+      }
+    }
+  },
+
+  "notes": [
+    "Keywords are case-insensitive for matching",
+    "Insurance minimum is in USD whole dollars",
+    "Demo scenario uses satellite_upgrade campaign type",
+    "Equipment/certification keywords should be expanded based on real responses"
+  ]
+}

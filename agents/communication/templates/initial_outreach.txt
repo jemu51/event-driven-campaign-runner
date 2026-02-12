@@ -1,0 +1,34 @@
+Hi {{ provider_name }},
+
+We're reaching out because we have an exciting opportunity for {{ campaign_type }} technicians in the {{ market }} area, and we believe you'd be a great fit for our network.
+
+**Opportunity Details:**
+- Campaign: {{ campaign_type | title }}
+- Location: {{ market | title }}
+- Equipment Required: {{ equipment_list }}
+- Travel: {% if travel_required %}Some travel within the region may be required{% else %}Local work only{% endif %}
+
+**What We Need From You:**
+1. Confirm your availability and interest
+2. Let us know what equipment you have access to
+{% if insurance_requirement %}3. Submit your insurance certificate ({{ insurance_requirement }}){% endif %}
+
+**Why Work With Us:**
+- Competitive pay rates
+- Flexible scheduling
+- Consistent work in your area
+- Simple application process
+
+**Next Steps:**
+Simply reply to this email with:
+- Your availability this week
+- Equipment you have (bucket truck, spectrum analyzer, etc.)
+- Attached insurance certificate if available (please keep files under 30MB)
+
+We're looking forward to hearing from you!
+
+Best regards,
+The Recruitment Team
+
+---
+Questions? Reply to this email and we'll get back to you promptly.

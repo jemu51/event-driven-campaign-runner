@@ -1,0 +1,26 @@
+Hi {{ provider_name }},
+
+Congratulations! 🎉
+
+We're pleased to inform you that you've been **qualified** for the {{ campaign_type }} campaign in {{ market }}.
+
+**What This Means:**
+You've met all our requirements and are now part of our qualified provider network for this campaign.
+
+**Next Steps:**
+{{ next_steps }}
+
+**What to Expect:**
+- You'll receive job assignments via email
+- Work scheduling will be flexible based on availability
+- Payment terms will be outlined with each assignment
+
+We're excited to have you on board! If you have any questions about the campaign or what to expect, just reply to this email.
+
+Welcome to the team!
+
+Best regards,
+The Recruitment Team
+
+---
+Questions about assignments or scheduling? Reply to this email anytime.

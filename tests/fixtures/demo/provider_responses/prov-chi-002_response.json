@@ -1,0 +1,14 @@
+{
+  "provider_id": "prov-chi-002",
+  "provider_name": "Jennifer Lee",
+  "email": "jennifer.lee@lakeshoreservices.net",
+  "market": "chicago",
+  "demo_scenario": "expired_insurance",
+  "expected_outcome": "REJECTED",
+  "email_response": {
+    "subject": "Re: OPPORTUNITY: Satellite Upgrade technicians needed in Chicago",
+    "body": "Hi there,\n\nI'd love to participate in this satellite upgrade project!\n\nI have everything you need:\n- Bucket truck with 45ft reach\n- Spectrum analyzer (Anritsu model)\n- OTDR for fiber testing\n\nI'm BICSI certified and hold an FCC General Radiotelephone license. I've been doing this work for 7 years with excellent customer feedback.\n\nAbsolutely willing to travel throughout the Chicago area and neighboring states.\n\nI've attached my insurance certificate for review. Let me know if you need anything else!\n\nBest,\nJennifer Lee\nLakeshore Services\n(773) 555-0234",
+    "has_attachment": true,
+    "attachment_filename": "Insurance_Certificate_JenniferLee_Expired_2025.pdf"
+  }
+}

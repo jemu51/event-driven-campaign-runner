@@ -1,0 +1,14 @@
+{
+  "provider_id": "prov-chi-003",
+  "provider_name": "James Wilson",
+  "email": "james.wilson@midwestnet.com",
+  "market": "chicago",
+  "demo_scenario": "partial_equipment_missing_analyzer",
+  "expected_outcome": "REJECTED",
+  "email_response": {
+    "subject": "Re: OPPORTUNITY: Satellite Upgrade technicians needed in Chicago",
+    "body": "Hello,\n\nThanks for the opportunity!\n\nI have a bucket truck (2020 International with 40ft aerial lift) and various cable testing equipment. I also have a 28ft extension ladder.\n\nI should mention that I don't currently own a spectrum analyzer. Most of my work has been cable installation rather than satellite, so I haven't needed one. Is it possible to rent one for this project, or would the client provide the equipment?\n\nI'm willing to travel in the Chicago area. I have current insurance that I can provide if needed.\n\nLet me know if we can work something out.\n\nJames Wilson\nMidwest Networking\n(847) 555-0567",
+    "has_attachment": false,
+    "attachment_filename": null
+  }
+}
